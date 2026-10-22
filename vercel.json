@@ -1,20 +1,33 @@
 {
-  "version": 2,
-  "buildCommand": "npm run build",
-  "outputDirectory": "web/dist",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "app": {
+      "root": ".",
+      "framework": "express"
+    },
+    "web": {
+      "root": "web",
+      "framework": "vite"
+    }
+  },
   "rewrites": [
     {
+      "source": "/api",
+      "destination": {
+        "service": "app"
+      }
+    },
+    {
       "source": "/api/(.*)",
-      "destination": "/api"
+      "destination": {
+        "service": "app"
+      }
     },
     {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": {
+        "service": "web"
+      }
     }
-  ],
-  "functions": {
-    "api/index.ts": {
-      "includeFiles": "fixtures/** agent/** src/knowledge/**"
-    }
-  }
+  ]
 }

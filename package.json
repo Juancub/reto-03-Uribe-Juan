@@ -10,7 +10,9 @@
     "dev:client": "npm run --prefix web dev",
     "demo": "tsx demo.ts",
     "build:client": "npm run --prefix web build",
-    "build": "npm run build:client && tsc --noEmit",
+    "build:server": "tsc --noEmit",
+    "build:all": "npm run build:client && tsc --noEmit",
+    "build": "tsc --noEmit",
     "postinstall": "npm --prefix web install",
     "start": "tsx src/server.ts"
   },
