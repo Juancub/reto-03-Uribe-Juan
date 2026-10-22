@@ -12,7 +12,7 @@ Agente conversacional completo e independiente para la preparación, validación
 
 ### 1. Clonar e Instalar
 ```bash
-git clone <URL_DE_TU_REPOSITORIO>
+git clone https://github.com/Juancub/reto-03-Uribe-Juan.git
 cd Reto03
 npm install
 npm --prefix web install
