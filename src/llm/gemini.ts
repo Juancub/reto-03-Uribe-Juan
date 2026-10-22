@@ -127,32 +127,82 @@ export class GeminiAdapter implements LlmAdapter {
     if (!caso) caso = "sol-001";
 
     if (lastMsg.role === "user") {
-      const text = (lastMsg.content || "").toLowerCase();
+      const text = (lastMsg.content || "").trim().toLowerCase();
+
+      // 1. Saludos comunes
+      if (/^(hola|buenos d[ií]as|buenas tardes|buenas noches|hey|saludos|que tal|qu[eé] tal)\b/i.test(text)) {
+        return {
+          text: "👋 ¡Hola! Soy el **Agente de Órdenes de Compra SAP** de Periferia IT Group.\n\nEstoy listo para asistirte en la validación y creación de órdenes de compra a partir de los paquetes documentales.\n\n¿Qué solicitud deseas procesar hoy? (Por ejemplo: `sol-001`, `sol-002`, `sol-004`).",
+          toolCalls: [],
+        };
+      }
+
+      // 2. Preguntas sobre capacidades o ayuda
+      if (/qu[eé] puedes hacer|qui[eé]n eres|c[oó]mo funcionas|ayuda|help|funciones/i.test(text)) {
+        return {
+          text: "Soy el **Agente Especializado en Órdenes de Compra SAP** de Periferia IT Group. Mis funciones son:\n\n1. **Lectura de Paquetes**: Normalizo solicitudes, cotizaciones, aprobaciones y facturas.\n2. **Validación de Reglas de Control (RC1-RC10)**: Verifico proveedores activos, centros de costo, topes de líderes y detecto órdenes retroactivas.\n3. **Generación de Evidencias**: Produzco archivos de aprobación con hash de integridad SHA-256.\n4. **Creación en SAP Simulado**: Asigno números de orden oficiales (`4500000001+`) con garantía de idempotencia.\n\nPuedes indicarme qué caso procesar (ej. `sol-001` a `sol-006`) o pulsar los botones de casos rápidos arriba.",
+          toolCalls: [],
+        };
+      }
+
+      // 3. Confirmación humana explícita
       const matchCasoDirecto = text.match(/sol-00[1-6]/i);
-      const casoActual = matchCasoDirecto ? matchCasoDirecto[0].toLowerCase() : caso;
-      const esConfirmacion = /confirmo|confirmar|sí|si|proceder|crear/i.test(text) && !matchCasoDirecto;
+      const esConfirmacion = /^(s[ií]|confirmo|confirmar|proceder|crear|autorizo|de acuerdo)\b/i.test(text) || (/confirmo|autorizo la creaci[oó]n|proceder con la creaci[oó]n/i.test(text) && !matchCasoDirecto);
 
       if (esConfirmacion) {
+        if (caso) {
+          return {
+            toolCalls: [
+              {
+                id: `call_confirm_${Date.now()}`,
+                name: "oc_crear",
+                args: { caso, confirmado: true, confirmado_por: "analista_chat" },
+              },
+            ],
+          };
+        } else {
+          return {
+            text: "No hay ninguna solicitud pendiente de confirmación en este momento. Por favor indícame qué caso deseas evaluar (ej. `sol-004`).",
+            toolCalls: [],
+          };
+        }
+      }
+
+      // 4. Si el usuario especifica un caso concreto (sol-001 a sol-006)
+      if (matchCasoDirecto) {
+        const casoSolicitado = matchCasoDirecto[0].toLowerCase();
         return {
           toolCalls: [
             {
-              id: `call_confirm_${Date.now()}`,
-              name: "oc_crear",
-              args: { caso: casoActual, confirmado: true, confirmado_por: "analista_chat" },
+              id: `call_read_${Date.now()}`,
+              name: "oc_leer_paquete",
+              args: { caso: casoSolicitado },
             },
           ],
         };
       }
 
-      // Flujo de inspección
+      // 5. Si menciona un caso que no existe
+      const matchOtroSol = text.match(/sol-\d+/i);
+      if (matchOtroSol) {
+        return {
+          text: `La solicitud \`${matchOtroSol[0].toUpperCase()}\` no existe en el catálogo de fixtures. Las solicitudes válidas son de \`sol-001\` a \`sol-006\`.`,
+          toolCalls: [],
+        };
+      }
+
+      // 6. Si pide procesar pero no indica qué solicitud
+      if (/procesa|crea|valida|revisa|analiza|orden|compra|solicitud/i.test(text)) {
+        return {
+          text: "¿Qué solicitud de compra deseas procesar? Por favor indícame el código (ejemplo: `sol-001`, `sol-002`, `sol-004`) o haz clic en los botones de acceso directo arriba.",
+          toolCalls: [],
+        };
+      }
+
+      // 7. Texto no relacionado o arbitrario
       return {
-        toolCalls: [
-          {
-            id: `call_read_${Date.now()}`,
-            name: "oc_leer_paquete",
-            args: { caso: casoActual },
-          },
-        ],
+        text: "Soy el **Agente de Órdenes de Compra SAP** de Periferia IT Group. Solo proceso solicitudes de compra y reglas de control presupuestal.\n\nNo reconozco una instrucción de compra en tu mensaje. Por favor indícame qué solicitud deseas procesar (ej. `sol-001`, `sol-004`) o haz una consulta sobre el proceso de órdenes de compra.",
+        toolCalls: [],
       };
     }
 
