@@ -1,35 +1,33 @@
+/* ─── Tokens Periferia IT Group (DESIGN.md en perxia4developers-v2.html) con Fondo Blanco ─── */
 :root {
-  --bg: #F8FAFC;
+  --bg: #FFFFFF;
   --surface: #FFFFFF;
   --surface-card: #FFFFFF;
-  --surface-subtle: #F1F5F9;
-  --surface-hover: #F8FAFC;
-  --line: #E2E8F0;
-  --line-strong: #CBD5E1;
-  --ink: #0F172A;
+  --surface-subtle: #F6FCF7;
+  --soft: #CCFFD6;
+  --ink: #212121;
   --ink-secondary: #334155;
-  --muted: #64748B;
-  --primary: #15601D;
-  --primary-hover: #0E4414;
-  --primary-soft: #ECFDF5;
-  --accent: #15601D;
-  --accent-light: #E8F5E9;
-  --accent-badge: #047857;
+  --muted: rgba(33, 33, 33, 0.75);
+  --line: #BFE8C0;
+  --line-strong: #8CD88F;
   --title: #15601D;
+  --accent: #15601D;
+  --fill: #6DFD8C;
+  --dark: #063635;
+  --active-bg: #063635;
+  --active-ink: #FFFFFF;
+  --th-bg: #063635;
+  --th-ink: #FFFFFF;
+  --row-alt: rgba(204, 255, 214, 0.35);
+  --shadow: 0 14px 36px rgba(6, 54, 53, 0.08);
+  --font-h: 'Outfit', sans-serif;
+  --font-b: 'Montserrat', sans-serif;
   --warning-bg: #FFFBEB;
   --warning-border: #FCD34D;
   --warning-text: #92400E;
   --danger-bg: #FEF2F2;
   --danger-border: #FCA5A5;
   --danger-text: #B91C1C;
-  --font-h: 'Outfit', sans-serif;
-  --font-b: 'Montserrat', sans-serif;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
 * {
@@ -50,7 +48,7 @@ body {
 h1, h2, h3, h4, .brand-title {
   font-family: var(--font-h);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 /* Custom Scrollbar */
@@ -62,11 +60,11 @@ h1, h2, h3, h4, .brand-title {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
+  background: var(--line);
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
+  background: var(--dark);
 }
 
 /* Markdown styling inside chat messages */
@@ -77,32 +75,33 @@ h1, h2, h3, h4, .brand-title {
   font-size: 13.5px;
   background: #FFFFFF;
   border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 16px rgba(6, 54, 53, 0.06);
 }
 
 .markdown-body th {
-  background: #F8FAFC;
-  color: #1E293B;
+  background: var(--th-bg);
+  color: var(--th-ink);
   text-align: left;
   padding: 10px 14px;
-  border-bottom: 2px solid var(--line);
+  border-bottom: 2px solid var(--fill);
   font-weight: 600;
+  font-family: var(--font-b);
 }
 
 .markdown-body td {
   padding: 9px 14px;
   border-bottom: 1px solid var(--line);
-  color: var(--ink-secondary);
+  color: var(--ink);
+}
+
+.markdown-body tbody tr:nth-child(even) td {
+  background: var(--row-alt);
 }
 
 .markdown-body tbody tr:last-child td {
   border-bottom: none;
-}
-
-.markdown-body tbody tr:hover {
-  background: #F8FAFC;
 }
 
 .markdown-body ul, .markdown-body ol {
@@ -112,36 +111,38 @@ h1, h2, h3, h4, .brand-title {
 
 .markdown-body li {
   margin-bottom: 4px;
-  color: var(--ink-secondary);
+  color: var(--ink);
 }
 
 .markdown-body code {
-  background: #F1F5F9;
-  color: var(--primary);
-  padding: 2px 6px;
-  border-radius: 4px;
+  background: var(--soft);
+  color: var(--dark);
+  padding: 2px 7px;
+  border-radius: 5px;
   font-family: monospace;
-  font-size: 0.88em;
-  font-weight: 600;
-  border: 1px solid #E2E8F0;
+  font-size: 0.9em;
+  font-weight: 700;
+  border: 1px solid var(--line);
 }
 
 .markdown-body pre code {
   display: block;
   padding: 12px;
   overflow-x: auto;
-  background: #F8FAFC;
+  background: var(--dark);
+  color: #E2FFE7;
+  border-color: transparent;
 }
 
 .markdown-body strong {
-  color: #0F172A;
-  font-weight: 600;
+  color: var(--dark);
+  font-weight: 700;
 }
 
 .markdown-body h3 {
-  color: var(--primary);
+  color: var(--title);
   margin-bottom: 8px;
-  font-size: 1.12rem;
+  font-size: 1.15rem;
 }
 
 /* Pulse animation for thinking */
@@ -153,7 +154,7 @@ h1, h2, h3, h4, .brand-title {
 .pulse-dot {
   width: 7px;
   height: 7px;
-  background-color: var(--primary);
+  background-color: var(--dark);
   border-radius: 50%;
   display: inline-block;
   animation: pulseDot 1.4s infinite ease-in-out both;

@@ -16,7 +16,6 @@ import {
   Cpu,
   PanelLeftClose,
   PanelLeftOpen,
-  Menu,
   X
 } from "lucide-react";
 
@@ -70,7 +69,7 @@ export default function App() {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
       if (mobile) {
-        setIsSidebarOpen(false); // cerrado por defecto en pantallas pequeñas
+        setIsSidebarOpen(false);
       } else {
         setIsSidebarOpen(true);
       }
@@ -202,17 +201,17 @@ export default function App() {
   ];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden", background: "#F8FAFC" }}>
-      {/* ─── Header Corporativo Periferia (Fondo Blanco) ─── */}
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden", background: "#FFFFFF" }}>
+      {/* ─── Header Corporativo Periferia (Fondo Blanco con Acentos Periferia) ─── */}
       <header
         style={{
           background: "#FFFFFF",
-          borderBottom: "1px solid #E2E8F0",
+          borderBottom: "1px solid var(--line)",
           padding: "12px 20px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+          boxShadow: "0 2px 10px rgba(6, 54, 53, 0.05)",
           zIndex: 20,
         }}
       >
@@ -222,9 +221,9 @@ export default function App() {
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             title={isSidebarOpen ? "Ocultar panel lateral" : "Mostrar panel lateral"}
             style={{
-              background: "#F1F5F9",
-              border: "1px solid #E2E8F0",
-              color: "#334155",
+              background: "#FFFFFF",
+              border: "1px solid var(--line)",
+              color: "var(--dark)",
               width: "38px",
               height: "38px",
               borderRadius: "10px",
@@ -235,53 +234,54 @@ export default function App() {
               transition: "all 0.2s",
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.background = "#E2E8F0";
-              e.currentTarget.style.color = "#15601D";
+              e.currentTarget.style.background = "var(--soft)";
+              e.currentTarget.style.borderColor = "var(--title)";
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.background = "#F1F5F9";
-              e.currentTarget.style.color = "#334155";
+              e.currentTarget.style.background = "#FFFFFF";
+              e.currentTarget.style.borderColor = "var(--line)";
             }}
           >
-            {isSidebarOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
+            {isSidebarOpen ? <PanelLeftClose size={18} color="#063635" /> : <PanelLeftOpen size={18} color="#063635" />}
           </button>
 
           <div
             style={{
-              width: "38px",
-              height: "38px",
-              borderRadius: "10px",
-              background: "#15601D",
+              width: "40px",
+              height: "40px",
+              borderRadius: "11px",
+              background: "var(--dark)",
+              border: "1px solid var(--fill)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: "0 2px 6px rgba(21, 96, 29, 0.2)",
+              boxShadow: "0 2px 8px rgba(6, 54, 53, 0.18)",
             }}
           >
-            <Bot size={22} color="#FFFFFF" />
+            <Bot size={22} color="#6DFD8C" />
           </div>
 
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <span className="brand-title" style={{ fontSize: "1.1rem", color: "#15601D", fontWeight: 700 }}>
+              <span className="brand-title" style={{ fontSize: "1.15rem", color: "var(--title)", fontWeight: 800 }}>
                 Perxia 2.0
               </span>
               <span
                 style={{
                   fontSize: "0.72rem",
-                  background: "#ECFDF5",
-                  color: "#047857",
+                  background: "var(--soft)",
+                  color: "var(--dark)",
                   padding: "2px 8px",
                   borderRadius: "999px",
-                  border: "1px solid #A7F3D0",
-                  fontWeight: 600,
+                  border: "1px solid var(--line)",
+                  fontWeight: 700,
                 }}
               >
                 Reto 03
               </span>
             </div>
-            <p style={{ fontSize: "0.8rem", color: "#64748B" }}>
-              Agente Autónomo de Órdenes de Compra SAP
+            <p style={{ fontSize: "0.8rem", color: "var(--muted)" }}>
+              Agente Autónomo de Órdenes de Compra SAP ERP
             </p>
           </div>
         </div>
@@ -294,16 +294,16 @@ export default function App() {
               display: "flex",
               alignItems: "center",
               gap: "6px",
-              background: "#F8FAFC",
-              padding: "6px 12px",
+              background: "#FFFFFF",
+              padding: "6px 14px",
               borderRadius: "999px",
-              border: "1px solid #E2E8F0",
+              border: "1px solid var(--line)",
               fontSize: "0.8rem",
             }}
           >
             <Cpu size={14} color="#15601D" />
-            <span style={{ color: "#64748B" }}>Motor:</span>
-            <span style={{ color: "#15601D", fontWeight: 600 }}>{serverStatus.provider}</span>
+            <span style={{ color: "var(--muted)" }}>Motor:</span>
+            <span style={{ color: "var(--dark)", fontWeight: 700 }}>{serverStatus.provider}</span>
           </div>
 
           <button
@@ -314,22 +314,22 @@ export default function App() {
               alignItems: "center",
               gap: "6px",
               background: "#FFFFFF",
-              border: "1px solid #CBD5E1",
-              color: "#334155",
+              border: "1px solid var(--line)",
+              color: "var(--dark)",
               padding: "7px 14px",
               borderRadius: "999px",
               cursor: "pointer",
               fontSize: "0.82rem",
-              fontWeight: 500,
+              fontWeight: 600,
               transition: "all 0.2s",
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.borderColor = "#15601D";
-              e.currentTarget.style.color = "#15601D";
+              e.currentTarget.style.borderColor = "var(--title)";
+              e.currentTarget.style.background = "var(--soft)";
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.borderColor = "#CBD5E1";
-              e.currentTarget.style.color = "#334155";
+              e.currentTarget.style.borderColor = "var(--line)";
+              e.currentTarget.style.background = "#FFFFFF";
             }}
           >
             <RotateCcw size={14} />
@@ -338,10 +338,10 @@ export default function App() {
         </div>
       </header>
 
-      {/* ─── Contenedor Principal con Sidebar Izquierdo ─── */}
-      <div style={{ display: "flex", flex: 1, overflow: "hidden", position: "relative" }}>
+      {/* ─── Contenedor Principal (Fondo Blanco) con Sidebar Izquierdo ─── */}
+      <div style={{ display: "flex", flex: 1, overflow: "hidden", position: "relative", background: "#FFFFFF" }}>
         
-        {/* Backdrop para móviles cuando el sidebar está abierto */}
+        {/* Backdrop para móviles */}
         {isMobile && isSidebarOpen && (
           <div
             onClick={() => setIsSidebarOpen(false)}
@@ -351,20 +351,20 @@ export default function App() {
               left: 0,
               right: 0,
               bottom: 0,
-              background: "rgba(15, 23, 42, 0.4)",
+              background: "rgba(6, 54, 53, 0.4)",
               zIndex: 30,
               backdropFilter: "blur(2px)",
             }}
           />
         )}
 
-        {/* ─── Sidebar Izquierdo (Escondible / Colapsable) ─── */}
+        {/* ─── Sidebar Izquierdo con los Colores Oficiales ─── */}
         <aside
           style={{
             width: isSidebarOpen ? (isMobile ? "280px" : "310px") : "0px",
             minWidth: isSidebarOpen ? (isMobile ? "280px" : "310px") : "0px",
             background: "#FFFFFF",
-            borderRight: isSidebarOpen ? "1px solid #E2E8F0" : "none",
+            borderRight: isSidebarOpen ? "1px solid var(--line)" : "none",
             display: "flex",
             flexDirection: "column",
             gap: "18px",
@@ -375,7 +375,7 @@ export default function App() {
             zIndex: isMobile ? 40 : 10,
             position: isMobile ? "absolute" : "relative",
             height: "100%",
-            boxShadow: isMobile && isSidebarOpen ? "4px 0 20px rgba(0,0,0,0.12)" : "none",
+            boxShadow: isMobile && isSidebarOpen ? "4px 0 20px rgba(6, 54, 53, 0.15)" : "none",
             visibility: isSidebarOpen ? "visible" : "hidden",
             opacity: isSidebarOpen ? 1 : 0,
           }}
@@ -383,10 +383,10 @@ export default function App() {
           {/* Header del sidebar en móvil */}
           {isMobile && (
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
-              <span style={{ fontWeight: 700, fontSize: "0.95rem", color: "#15601D" }}>Panel SAP</span>
+              <span style={{ fontWeight: 800, fontSize: "0.95rem", color: "var(--title)" }}>Panel SAP ERP</span>
               <button
                 onClick={() => setIsSidebarOpen(false)}
-                style={{ background: "transparent", border: "none", cursor: "pointer", color: "#64748B" }}
+                style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--dark)" }}
               >
                 <X size={20} />
               </button>
@@ -396,87 +396,90 @@ export default function App() {
           {/* Card: SAP ERP Simulado */}
           <div
             style={{
-              background: "#F8FAFC",
-              border: "1px solid #E2E8F0",
+              background: "#FFFFFF",
+              border: "1px solid var(--line)",
               borderRadius: "14px",
               padding: "16px",
+              boxShadow: "0 4px 16px rgba(6, 54, 53, 0.05)",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#15601D", marginBottom: "10px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--title)", marginBottom: "12px" }}>
               <Layers size={18} />
               <h3 style={{ fontSize: "0.92rem", fontWeight: 700 }}>SAP ERP Simulado</h3>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "8px", fontSize: "0.82rem" }}>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: "#64748B" }}>Sociedad:</span>
-                <span style={{ fontWeight: 600, color: "#0F172A" }}>1000 (Periferia)</span>
+                <span style={{ color: "var(--muted)" }}>Sociedad:</span>
+                <span style={{ fontWeight: 700, color: "var(--dark)" }}>1000 (Periferia)</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: "#64748B" }}>Org. Compras:</span>
-                <span style={{ fontWeight: 600, color: "#0F172A" }}>1000</span>
+                <span style={{ color: "var(--muted)" }}>Org. Compras:</span>
+                <span style={{ fontWeight: 700, color: "var(--dark)" }}>1000</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: "#64748B" }}>Rango Consecutivos:</span>
-                <span style={{ fontWeight: 600, color: "#0F172A" }}>4500000001+</span>
+                <span style={{ color: "var(--muted)" }}>Rango Consecutivos:</span>
+                <span style={{ fontWeight: 700, color: "var(--dark)" }}>4500000001+</span>
               </div>
             </div>
           </div>
 
-          {/* Card: Última OC en SAP (out/sap) */}
+          {/* Card: Última OC en SAP (Destacada con Dark Teal y Neón Green) */}
           <div
             style={{
-              background: lastOcCreated ? "#F0FDF4" : "#F8FAFC",
-              border: `1px solid ${lastOcCreated ? "#86EFAC" : "#E2E8F0"}`,
+              background: "linear-gradient(135deg, #063635 0%, #0d4a49 100%)",
+              border: `1px solid ${lastOcCreated ? "var(--fill)" : "rgba(109, 253, 140, 0.3)"}`,
               borderRadius: "14px",
-              padding: "16px",
+              padding: "18px",
+              boxShadow: "0 8px 24px rgba(6, 54, 53, 0.16)",
               transition: "all 0.3s",
+              color: "#FFFFFF",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#15601D", marginBottom: "8px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--fill)", marginBottom: "8px" }}>
               <CheckCircle2 size={18} />
-              <h3 style={{ fontSize: "0.92rem", fontWeight: 700 }}>Última OC en SAP</h3>
+              <h3 style={{ fontSize: "0.92rem", fontWeight: 700, color: "#FFFFFF" }}>Última OC en SAP</h3>
             </div>
             {lastOcCreated ? (
               <div>
-                <div style={{ fontSize: "1.45rem", fontWeight: 800, color: "#15601D", letterSpacing: "0.02em", margin: "4px 0" }}>
+                <div style={{ fontSize: "1.55rem", fontWeight: 800, color: "var(--fill)", letterSpacing: "0.03em", margin: "6px 0" }}>
                   #{lastOcCreated}
                 </div>
-                <div style={{ fontSize: "0.78rem", color: "#334155" }}>
+                <div style={{ fontSize: "0.8rem", color: "#E2FFE7" }}>
                   {lastOcDetails?.solicitud_id && (
-                    <div style={{ marginBottom: "2px" }}>
-                      Solicitud: <span style={{ color: "#15601D", fontWeight: 600 }}>{lastOcDetails.solicitud_id}</span>
+                    <div style={{ marginBottom: "3px" }}>
+                      Solicitud: <span style={{ color: "var(--fill)", fontWeight: 700 }}>{lastOcDetails.solicitud_id}</span>
                     </div>
                   )}
                   {lastOcDetails?.totalOrdenes !== undefined && (
-                    <div style={{ color: "#64748B", marginBottom: "4px" }}>
+                    <div style={{ color: "var(--soft)", marginBottom: "6px" }}>
                       Total en base SAP: <b>{lastOcDetails.totalOrdenes} órdenes</b>
                     </div>
                   )}
-                  <div style={{ fontSize: "0.74rem", color: "#94A3B8" }}>
+                  <div style={{ fontSize: "0.74rem", color: "rgba(255, 255, 255, 0.7)" }}>
                     Almacenada en <code>out/sap/ordenes.jsonl</code>
                   </div>
                 </div>
               </div>
             ) : (
-              <p style={{ fontSize: "0.8rem", color: "#64748B" }}>
+              <p style={{ fontSize: "0.82rem", color: "rgba(255, 255, 255, 0.75)" }}>
                 Aún no hay órdenes registradas en el almacenamiento persistente de SAP (`out/sap/`).
               </p>
             )}
           </div>
 
           {/* Footer del sidebar */}
-          <div style={{ marginTop: "auto", fontSize: "0.75rem", color: "#94A3B8", textAlign: "center", padding: "10px 0" }}>
+          <div style={{ marginTop: "auto", fontSize: "0.75rem", color: "var(--muted)", textAlign: "center", padding: "10px 0" }}>
             Perxia 2.0 · Periferia IT Group
             <br />
             Reto Técnico 03
           </div>
         </aside>
 
-        {/* ─── Área Principal: Feed del Chat & Barra de Entrada ─── */}
-        <main style={{ display: "flex", flexDirection: "column", flex: 1, height: "100%", overflow: "hidden", background: "#F8FAFC" }}>
+        {/* ─── Área Principal del Chat (Fondo Blanco Puro) ─── */}
+        <main style={{ display: "flex", flexDirection: "column", flex: 1, height: "100%", overflow: "hidden", background: "#FFFFFF" }}>
           
           {/* Feed de Mensajes */}
-          <div style={{ flex: 1, overflowY: "auto", padding: "20px 24px", display: "flex", flexDirection: "column", gap: "18px" }}>
+          <div style={{ flex: 1, overflowY: "auto", padding: "20px 24px", display: "flex", flexDirection: "column", gap: "18px", background: "#FFFFFF" }}>
             {messages.map((m) => (
               <div
                 key={m.id}
@@ -491,18 +494,18 @@ export default function App() {
                 {m.role === "assistant" && (
                   <div
                     style={{
-                      width: "34px",
-                      height: "34px",
+                      width: "36px",
+                      height: "36px",
                       borderRadius: "10px",
-                      background: "#ECFDF5",
-                      border: "1px solid #A7F3D0",
+                      background: "var(--soft)",
+                      border: "1px solid var(--line)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       flexShrink: 0,
                     }}
                   >
-                    <Bot size={18} color="#15601D" />
+                    <Bot size={20} color="#15601D" />
                   </div>
                 )}
 
@@ -518,11 +521,11 @@ export default function App() {
                             key={idx}
                             style={{
                               background: "#FFFFFF",
-                              border: "1px solid #E2E8F0",
+                              border: "1px solid var(--line)",
                               borderRadius: "8px",
                               overflow: "hidden",
                               fontSize: "0.8rem",
-                              boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
+                              boxShadow: "0 2px 6px rgba(6, 54, 53, 0.04)",
                             }}
                           >
                             <button
@@ -531,11 +534,11 @@ export default function App() {
                                 width: "100%",
                                 background: "transparent",
                                 border: "none",
-                                padding: "6px 12px",
+                                padding: "7px 12px",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "space-between",
-                                color: "#15601D",
+                                color: "var(--dark)",
                                 cursor: "pointer",
                                 textAlign: "left",
                                 fontFamily: "var(--font-b)",
@@ -543,33 +546,33 @@ export default function App() {
                             >
                               <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                                 <Database size={13} color="#15601D" />
-                                <span style={{ fontWeight: 600 }}>Herramienta: {tc.name}</span>
-                                <span style={{ color: "#64748B", fontSize: "0.75rem" }}>
+                                <span style={{ fontWeight: 700 }}>Herramienta: {tc.name}</span>
+                                <span style={{ color: "var(--muted)", fontSize: "0.75rem" }}>
                                   ({tc.args?.caso || "ejecutado"})
                                 </span>
                               </div>
-                              {isOpen ? <ChevronDown size={14} color="#64748B" /> : <ChevronRight size={14} color="#64748B" />}
+                              {isOpen ? <ChevronDown size={14} color="#063635" /> : <ChevronRight size={14} color="#063635" />}
                             </button>
 
                             {isOpen && (
                               <div
                                 style={{
-                                  padding: "8px 12px",
-                                  borderTop: "1px solid #E2E8F0",
-                                  background: "#0F172A",
-                                  color: "#F8FAFC",
+                                  padding: "10px 14px",
+                                  borderTop: "1px solid var(--line)",
+                                  background: "var(--dark)",
+                                  color: "#E2FFE7",
                                   fontFamily: "monospace",
-                                  fontSize: "0.74rem",
-                                  maxHeight: "180px",
+                                  fontSize: "0.75rem",
+                                  maxHeight: "190px",
                                   overflowY: "auto",
                                 }}
                               >
-                                <div style={{ color: "#94A3B8", marginBottom: "4px" }}>Parámetros:</div>
+                                <div style={{ color: "var(--fill)", marginBottom: "4px", fontWeight: 700 }}>Parámetros:</div>
                                 <pre style={{ color: "#67E8F9", whiteSpace: "pre-wrap" }}>
                                   {JSON.stringify(tc.args, null, 2)}
                                 </pre>
-                                <div style={{ color: "#94A3B8", marginTop: "6px", marginBottom: "4px" }}>Resultado:</div>
-                                <pre style={{ color: "#86EFAC", whiteSpace: "pre-wrap" }}>
+                                <div style={{ color: "var(--fill)", marginTop: "6px", marginBottom: "4px", fontWeight: 700 }}>Resultado:</div>
+                                <pre style={{ color: "var(--fill)", whiteSpace: "pre-wrap" }}>
                                   {JSON.stringify(tc.result, null, 2)}
                                 </pre>
                               </div>
@@ -583,12 +586,12 @@ export default function App() {
                   {/* Burbuja de Texto */}
                   <div
                     style={{
-                      background: m.role === "user" ? "#15601D" : "#FFFFFF",
-                      border: `1px solid ${m.role === "user" ? "#15601D" : "#E2E8F0"}`,
+                      background: m.role === "user" ? "linear-gradient(135deg, #063635 0%, #15601D 100%)" : "#FFFFFF",
+                      border: `1px solid ${m.role === "user" ? "#15601D" : "var(--line)"}`,
                       borderRadius: m.role === "user" ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
                       padding: "14px 18px",
-                      color: m.role === "user" ? "#FFFFFF" : "#0F172A",
-                      boxShadow: m.role === "user" ? "0 2px 6px rgba(21,96,29,0.25)" : "0 2px 8px rgba(0,0,0,0.04)",
+                      color: m.role === "user" ? "#FFFFFF" : "var(--ink)",
+                      boxShadow: m.role === "user" ? "0 4px 14px rgba(6, 54, 53, 0.22)" : "0 4px 20px rgba(6, 54, 53, 0.06)",
                     }}
                   >
                     <div className="markdown-body" style={{ color: m.role === "user" ? "#FFFFFF" : "inherit" }}>
@@ -602,8 +605,8 @@ export default function App() {
                       <div
                         style={{
                           marginTop: "14px",
-                          background: "#FFFBEB",
-                          border: "1px solid #FCD34D",
+                          background: "var(--warning-bg)",
+                          border: "1px solid var(--warning-border)",
                           borderRadius: "10px",
                           padding: "12px 14px",
                           display: "flex",
@@ -611,7 +614,7 @@ export default function App() {
                           gap: "8px",
                         }}
                       >
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#92400E", fontWeight: 700, fontSize: "0.88rem" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--warning-text)", fontWeight: 700, fontSize: "0.88rem" }}>
                           <AlertTriangle size={17} />
                           <span>Punto de Control Humano Requerido (Regla CA3)</span>
                         </div>
@@ -623,22 +626,28 @@ export default function App() {
                             onClick={handleConfirmAction}
                             disabled={isLoading}
                             style={{
-                              background: "#15601D",
-                              border: "none",
-                              color: "#FFFFFF",
-                              padding: "7px 14px",
+                              background: "linear-gradient(135deg, #063635 0%, #15601D 100%)",
+                              border: "1px solid var(--fill)",
+                              color: "var(--fill)",
+                              padding: "8px 16px",
                               borderRadius: "8px",
-                              fontWeight: 600,
+                              fontWeight: 700,
                               fontSize: "0.82rem",
                               cursor: "pointer",
                               display: "flex",
                               alignItems: "center",
                               gap: "6px",
-                              boxShadow: "0 2px 5px rgba(21,96,29,0.25)",
+                              boxShadow: "0 3px 8px rgba(6, 54, 53, 0.25)",
                               transition: "all 0.2s",
                             }}
-                            onMouseOver={(e) => (e.currentTarget.style.background = "#0E4414")}
-                            onMouseOut={(e) => (e.currentTarget.style.background = "#15601D")}
+                            onMouseOver={(e) => {
+                              e.currentTarget.style.background = "#15601D";
+                              e.currentTarget.style.color = "#FFFFFF";
+                            }}
+                            onMouseOut={(e) => {
+                              e.currentTarget.style.background = "linear-gradient(135deg, #063635 0%, #15601D 100%)";
+                              e.currentTarget.style.color = "var(--fill)";
+                            }}
                           >
                             <CheckCircle2 size={15} />
                             Confirmar y Crear OC en SAP
@@ -651,7 +660,7 @@ export default function App() {
                   <span
                     style={{
                       fontSize: "0.72rem",
-                      color: "#94A3B8",
+                      color: "var(--muted)",
                       alignSelf: m.role === "user" ? "flex-end" : "flex-start",
                       padding: "0 4px",
                     }}
@@ -663,17 +672,18 @@ export default function App() {
                 {m.role === "user" && (
                   <div
                     style={{
-                      width: "34px",
-                      height: "34px",
+                      width: "36px",
+                      height: "36px",
                       borderRadius: "10px",
-                      background: "#E2E8F0",
+                      background: "var(--dark)",
+                      border: "1px solid var(--fill)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       flexShrink: 0,
                     }}
                   >
-                    <User size={18} color="#475569" />
+                    <User size={18} color="#6DFD8C" />
                   </div>
                 )}
               </div>
@@ -683,31 +693,31 @@ export default function App() {
               <div style={{ display: "flex", gap: "12px", alignItems: "center", alignSelf: "flex-start" }}>
                 <div
                   style={{
-                    width: "34px",
-                    height: "34px",
+                    width: "36px",
+                    height: "36px",
                     borderRadius: "10px",
-                    background: "#ECFDF5",
-                    border: "1px solid #A7F3D0",
+                    background: "var(--soft)",
+                    border: "1px solid var(--line)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
-                  <Bot size={18} color="#15601D" />
+                  <Bot size={20} color="#15601D" />
                 </div>
                 <div
                   style={{
                     background: "#FFFFFF",
-                    border: "1px solid #E2E8F0",
+                    border: "1px solid var(--line)",
                     borderRadius: "16px 16px 16px 4px",
                     padding: "10px 16px",
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                    boxShadow: "0 2px 8px rgba(6, 54, 53, 0.05)",
                   }}
                 >
-                  <span style={{ fontSize: "0.82rem", color: "#64748B" }}>El agente está evaluando reglas de control</span>
+                  <span style={{ fontSize: "0.82rem", color: "var(--muted)" }}>El agente está evaluando reglas de control</span>
                   <div style={{ display: "flex", gap: "4px" }}>
                     <div className="pulse-dot"></div>
                     <div className="pulse-dot"></div>
@@ -719,11 +729,11 @@ export default function App() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* ─── Casos Rápidos y Barra de Entrada al Final del Chat ─── */}
+          {/* ─── Casos Rápidos y Barra de Entrada al Final del Chat (Fondo Blanco) ─── */}
           <div
             style={{
               background: "#FFFFFF",
-              borderTop: "1px solid #E2E8F0",
+              borderTop: "1px solid var(--line)",
               padding: "10px 20px 16px 20px",
               display: "flex",
               flexDirection: "column",
@@ -741,7 +751,7 @@ export default function App() {
                 paddingBottom: "4px",
               }}
             >
-              <span style={{ fontSize: "0.76rem", color: "#64748B", fontWeight: 600, marginRight: "4px" }}>
+              <span style={{ fontSize: "0.76rem", color: "var(--dark)", fontWeight: 700, marginRight: "4px" }}>
                 Casos rápidos:
               </span>
               {quickCases.map((qc, idx) => (
@@ -750,13 +760,13 @@ export default function App() {
                   onClick={() => handleSend(qc.prompt)}
                   disabled={isLoading}
                   style={{
-                    background: "#F8FAFC",
-                    border: "1px solid #CBD5E1",
-                    color: "#334155",
-                    padding: "4px 10px",
+                    background: "#FFFFFF",
+                    border: "1px solid var(--line)",
+                    color: "var(--dark)",
+                    padding: "5px 12px",
                     borderRadius: "999px",
-                    fontSize: "0.75rem",
-                    fontWeight: 600,
+                    fontSize: "0.78rem",
+                    fontWeight: 700,
                     cursor: isLoading ? "not-allowed" : "pointer",
                     display: "flex",
                     alignItems: "center",
@@ -766,26 +776,28 @@ export default function App() {
                   }}
                   onMouseOver={(e) => {
                     if (!isLoading) {
-                      e.currentTarget.style.borderColor = "#15601D";
-                      e.currentTarget.style.color = "#15601D";
-                      e.currentTarget.style.background = "#ECFDF5";
+                      e.currentTarget.style.borderColor = "var(--title)";
+                      e.currentTarget.style.color = "var(--title)";
+                      e.currentTarget.style.background = "var(--soft)";
+                      e.currentTarget.style.transform = "translateY(-1px)";
                     }
                   }}
                   onMouseOut={(e) => {
                     if (!isLoading) {
-                      e.currentTarget.style.borderColor = "#CBD5E1";
-                      e.currentTarget.style.color = "#334155";
-                      e.currentTarget.style.background = "#F8FAFC";
+                      e.currentTarget.style.borderColor = "var(--line)";
+                      e.currentTarget.style.color = "var(--dark)";
+                      e.currentTarget.style.background = "#FFFFFF";
+                      e.currentTarget.style.transform = "none";
                     }
                   }}
                 >
-                  <Sparkles size={11} color="#15601D" />
+                  <Sparkles size={12} color="#15601D" />
                   {qc.label}
                 </button>
               ))}
             </div>
 
-            {/* Input Form */}
+            {/* Input Form con Fondo Blanco y Bordes Periferia */}
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -794,15 +806,16 @@ export default function App() {
               style={{
                 display: "flex",
                 gap: "8px",
-                background: "#F8FAFC",
-                border: "1px solid #CBD5E1",
+                background: "#FFFFFF",
+                border: "1.5px solid var(--line)",
                 borderRadius: "12px",
                 padding: "6px 8px 6px 14px",
                 alignItems: "center",
                 transition: "border-color 0.2s",
+                boxShadow: "0 2px 8px rgba(6, 54, 53, 0.04)",
               }}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#15601D")}
-              onBlur={(e) => (e.currentTarget.style.borderColor = "#CBD5E1")}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "var(--title)")}
+              onBlur={(e) => (e.currentTarget.style.borderColor = "var(--line)")}
             >
               <input
                 type="text"
@@ -815,7 +828,7 @@ export default function App() {
                   background: "transparent",
                   border: "none",
                   outline: "none",
-                  color: "#0F172A",
+                  color: "var(--ink)",
                   fontFamily: "var(--font-b)",
                   fontSize: "0.9rem",
                 }}
@@ -824,8 +837,8 @@ export default function App() {
                 type="submit"
                 disabled={isLoading || !input.trim()}
                 style={{
-                  background: input.trim() && !isLoading ? "#15601D" : "#E2E8F0",
-                  color: input.trim() && !isLoading ? "#FFFFFF" : "#94A3B8",
+                  background: input.trim() && !isLoading ? "var(--dark)" : "var(--line)",
+                  color: input.trim() && !isLoading ? "var(--fill)" : "var(--muted)",
                   border: "none",
                   borderRadius: "8px",
                   width: "36px",
