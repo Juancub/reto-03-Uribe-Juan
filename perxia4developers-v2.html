@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Perxia 4 Developers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Montserrat:wght@400;600;700&display=swap">
+<style>
+/* ─── Tokens Periferia IT Group (DESIGN.md) ─────────────────────────────── */
+:root{
+  --bg:#FFFFFF; --surface:#FFFFFF; --soft:#CCFFD6; --ink:#212121; --muted:rgb(33 33 33 / .78);
+  --line:#BFE8C0; --title:#15601D; --accent:#15601D; --fill:#6DFD8C; --dark:#063635;
+  --active-bg:#063635; --active-ink:#FFFFFF; --th-bg:#063635; --th-ink:#FFFFFF; --row-alt:rgb(204 255 214 / .35);
+  --shadow:0 14px 36px rgb(6 54 53 / .12);
+  --halo:radial-gradient(1100px 480px at 100% 0%, #CCFFD6 0%, rgb(204 255 214 / 0) 70%);
+  --font-h:'Outfit','Arial Black',Arial,sans-serif;
+  --font-b:'Montserrat',Calibri,Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#063635; --surface:rgb(109 253 140 / .06); --soft:rgb(109 253 140 / .12); --ink:#FFFFFF; --muted:rgb(255 255 255 / .8);
+  --line:rgb(109 253 140 / .28); --title:#6DFD8C; --accent:#6DFD8C; --fill:#6DFD8C; --dark:#063635;
+  --active-bg:#6DFD8C; --active-ink:#063635; --th-bg:rgb(109 253 140 / .16); --th-ink:#FFFFFF; --row-alt:rgb(109 253 140 / .05);
+  --shadow:none; --halo:radial-gradient(1100px 480px at 100% 0%, rgb(109 253 140 / .16) 0%, rgb(109 253 140 / 0) 70%);}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#063635; --surface:rgb(109 253 140 / .06); --soft:rgb(109 253 140 / .12); --ink:#FFFFFF; --muted:rgb(255 255 255 / .8);
+  --line:rgb(109 253 140 / .28); --title:#6DFD8C; --accent:#6DFD8C; --fill:#6DFD8C; --dark:#063635;
+  --active-bg:#6DFD8C; --active-ink:#063635; --th-bg:rgb(109 253 140 / .16); --th-ink:#FFFFFF; --row-alt:rgb(109 253 140 / .05);
+  --shadow:none; --halo:radial-gradient(1100px 480px at 100% 0%, rgb(109 253 140 / .16) 0%, rgb(109 253 140 / 0) 70%);}
+
+/* ─── Base ──────────────────────────────────────────────────────────────── */
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background-color:var(--bg);background-image:var(--halo);color:var(--ink);font:16px/1.6 var(--font-b);padding:0 16px}
+.wrap{max-width:1180px;margin:0 auto;padding-block:28px 60px}
+h1,h2,h3,h4{font-family:var(--font-h);margin:0;text-wrap:balance;letter-spacing:-.01em}
+a{color:var(--accent);font-weight:600;text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input[type=checkbox],input[type=radio]{accent-color:var(--accent);width:18px;height:18px;margin:0}
+
+/* ─── Header ────────────────────────────────────────────────────────────── */
+.logo{display:block;width:250px;max-width:100%;height:auto}
+.brand{font:600 14px/1.2 var(--font-b);color:var(--title);margin-top:14px}
+header.top{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end;margin-bottom:22px}
+header.top h1{font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.08;margin-top:6px}
+header.top p{color:var(--muted);margin:8px 0 0;max-width:68ch}
+.ring{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:14px 18px;box-shadow:var(--shadow)}
+.ring svg{width:64px;height:64px}
+.ring b{font:700 22px/1.1 var(--font-h);display:block}
+.ring small{color:var(--muted);font-size:14px}
+
+/* ─── Notas y controles ─────────────────────────────────────────────────── */
+.note-card{background:var(--soft);color:var(--ink);border-radius:28px;padding:18px 22px;margin-bottom:22px;display:grid;gap:6px}
+.note-card strong,.note-card b{color:var(--title)}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:18px}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:9999px;padding:8px 18px;font:600 14px var(--font-b);cursor:pointer}
+.btn.primary{background:var(--active-bg);color:var(--active-ink);border-color:transparent}
+.btn-reset{margin-left:auto}
+.confirm-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+
+/* ─── Layout ────────────────────────────────────────────────────────────── */
+.layout{display:grid;grid-template-columns:260px 1fr;gap:22px;align-items:start}
+nav.days{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:grid;gap:6px}
+
+/* ─── Pestañas de día ───────────────────────────────────────────────────── */
+.tab{display:grid;grid-template-columns:58px 1fr auto;gap:8px;align-items:center;text-align:left;border:0;background:transparent;color:var(--ink);font:inherit;padding:10px 12px;border-radius:16px;cursor:pointer}
+.tab:hover{background:var(--soft)}
+.tab[aria-selected="true"]{background:var(--active-bg);color:var(--active-ink)}
+.tab .n{font:700 13px var(--font-h);color:var(--title)}
+.tab[aria-selected="true"] .n{color:var(--active-ink)}
+.tab .t{font:600 15px/1.25 var(--font-b)}
+.tab .p{font:600 12px var(--font-b);color:var(--muted);font-variant-numeric:tabular-nums}
+.tab[aria-selected="true"] .p{color:var(--active-ink)}
+.tab .p.done{color:var(--title)}
+.tab[aria-selected="true"] .p.done{color:var(--active-ink)}
+
+/* ─── Panel del día ─────────────────────────────────────────────────────── */
+main.panel{background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:28px;box-shadow:var(--shadow);min-width:0}
+.eyebrow{font:600 14px var(--font-b);color:var(--muted)}
+.panel h2{font:700 30px/1.15 var(--font-h);margin:6px 0 6px}
+.panel .focus{color:var(--muted);margin:0 0 18px;max-width:72ch}
+.bar{height:8px;background:var(--line);border-radius:9999px;overflow:hidden;margin-bottom:8px}
+.bar i{display:block;height:100%;background:var(--fill);transition:width .3s}
+.sec{margin-top:26px}
+.sec h3{font:700 18px var(--font-h);color:var(--title);margin-bottom:12px}
+ul.learn{margin:0;padding-left:20px;display:grid;gap:6px}
+
+/* ─── Tablas ────────────────────────────────────────────────────────────── */
+.tw{overflow-x:auto;border-radius:16px;border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{background:var(--th-bg);color:var(--th-ink);font:600 14px var(--font-b);text-align:left;padding:10px 12px;vertical-align:top}
+td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}
+tbody tr:nth-child(even) td{background:var(--row-alt)}
+
+/* ─── Prácticas evaluables ──────────────────────────────────────────────── */
+.essay{background:var(--soft);border-radius:16px;padding:18px 20px;margin-top:12px}
+.essay h4{font:700 17px var(--font-h);margin:0 0 6px}
+.essay p{margin:0 0 8px}
+.essay dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 14px;margin:10px 0 0;font-size:15px}
+.essay dt{font-weight:600}
+.essay dd{margin:0}
+.essay label{display:flex;gap:10px;align-items:center;margin-top:12px;font-weight:600;cursor:pointer}
+
+/* ─── Validación (quiz) ─────────────────────────────────────────────────── */
+.quiz{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin-top:12px}
+.quiz fieldset{border:0;padding:0;margin:0 0 16px}
+.quiz legend{font:700 16px/1.35 var(--font-h);padding:0;margin-bottom:8px}
+.quiz .opt{display:flex;gap:10px;align-items:flex-start;padding:4px 0;cursor:pointer}
+.quiz .fb{font-size:14px;margin:6px 0 0;color:var(--muted)}
+.quiz .fb.ok{color:var(--title);font-weight:600}
+.quiz .fb.no{color:var(--ink);font-weight:600}
+
+/* ─── Para profundizar (no evaluado) ────────────────────────────────────── */
+.profundizar{margin-top:26px;border:1px dashed var(--line);border-radius:16px;padding:16px 20px}
+.profundizar h3{font:700 16px var(--font-h);margin-bottom:4px}
+.pf-note{color:var(--muted);font-size:14px;margin:0 0 10px}
+.profundizar ul{margin:0;padding-left:18px;display:grid;gap:8px;font-size:15px}
+.kind{color:var(--muted);font-size:13px}
+.note{display:block;color:var(--muted);font-size:14px}
+
+/* ─── Tarjetas de pie ───────────────────────────────────────────────────── */
+.extra{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;margin-top:28px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:22px;box-shadow:var(--shadow)}
+.card.wide{grid-column:1/-1}
+.card h3{font:700 18px var(--font-h);color:var(--title);margin-bottom:10px}
+.card p{margin:0 0 10px}
+.card .tw{margin-top:10px}
+
+/* ─── Responsive ────────────────────────────────────────────────────────── */
+@media (max-width:820px){
+  .layout{grid-template-columns:1fr}
+  nav.days{position:static;display:flex;overflow-x:auto;gap:6px;padding-bottom:6px}
+  .tab{grid-template-columns:auto;min-width:130px}
+  .tab .p{display:none}
+  header.top{grid-template-columns:1fr}
+  main.panel{padding:18px}
+  .essay dl{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <picture>
+        <source media="(prefers-color-scheme:dark)" srcset="assets/logos/logo-oscuro.svg">
+        <img class="logo" src="assets/logos/logo-claro.svg" alt="Periferia IT Group" width="250">
+      </picture>
+      <div class="brand">Capacitación interna</div>
+      <h1>Perxia 4 Developers</h1>
+      <p>Cinco días para usar Perxia como herramienta de trabajo. Cada día tiene una práctica que se evalúa; los enlaces para profundizar son opcionales.</p>
+    </div>
+    <div class="ring" aria-live="polite">
+      <svg viewBox="0 0 36 36" aria-hidden="true">
+        <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--line)" stroke-width="3.2"/>
+        <circle id="ringArc" cx="18" cy="18" r="15.9" fill="none" stroke="var(--fill)" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="0 100" transform="rotate(-90 18 18)"/>
+      </svg>
+      <div><b id="pct">0%</b><small id="cnt">0 de 0 prácticas</small></div>
+    </div>
+  </header>
+
+  <div class="note-card">
+    <strong>Objetivo del programa</strong>
+    <span>Aprender a usar Perxia en el trabajo diario, de lunes a viernes. No se busca modificar Perxia ni desarrollar sus funciones internas.</span>
+    <span><b>Regla de oro:</b> solo datos inventados en todos los ejercicios. Nunca información real de clientes, del banco ni de proyectos activos.</span>
+  </div>
+
+  <div class="controls" role="group" aria-label="Opciones">
+    <button class="btn btn-reset" id="reset">Borrar mi progreso</button>
+  </div>
+  <div id="confirmReset" class="note-card" hidden>
+    <span>¿Seguro que quieres borrar todo tu progreso?</span>
+    <div class="confirm-actions">
+      <button class="btn primary" id="yesReset">Sí, borrar</button>
+      <button class="btn" id="noReset">Cancelar</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <nav class="days" role="tablist" aria-label="Días" id="tabs"></nav>
+    <main class="panel" id="panel" role="tabpanel"></main>
+  </div>
+
+  <div class="extra">
+    <section class="card">
+      <h3>Herramienta del programa</h3>
+      <p><b>Perxia</b> es la herramienta de trabajo del equipo, de lunes a viernes. Es la única herramienta que se practica y se evalúa en este programa.</p>
+      <p>Perxia está construida sobre Claude Code. Su base técnica se revisa en la referencia del pie, solo como apoyo.</p>
+    </section>
+    <section class="card">
+      <h3>Cómo se evalúa</h3>
+      <div class="tw"><table>
+        <thead><tr><th>Criterio</th><th>Qué se mira</th></tr></thead>
+        <tbody>
+          <tr><td>Resultado</td><td>¿Funciona o responde a lo pedido?</td></tr>
+          <tr><td>Verificación</td><td>¿Comprobaste lo que generó Perxia? ¿Detectaste errores?</td></tr>
+          <tr><td>Calidad del prompt</td><td>Contexto, rol, formato de salida y ejemplos dados a Perxia.</td></tr>
+          <tr><td>Documentación</td><td>¿Otra persona puede continuar desde donde dejaste?</td></tr>
+          <tr><td>Seguridad</td><td>¿Respetaste la regla de datos inventados y los permisos mínimos?</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:12px;color:var(--muted)">Los enlaces de «Para profundizar» y la referencia técnica no se evalúan. La prueba del día 5 es independiente y tiene criterios propios.</p>
+    </section>
+    <section class="card wide">
+      <h3>Referencia de la base técnica</h3>
+      <p>Material para profundizar en lo que hay detrás de Perxia. No forma parte de lo que se evalúa en la sesión.</p>
+      <div class="tw"><table>
+        <thead><tr><th>Recurso</th><th>Para qué sirve</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a></td><td>Acceso web a Claude: Projects, artefactos y skills.</td></tr>
+          <tr><td><a href="https://academy.claude.com/courses" target="_blank" rel="noopener">Claude Academy</a></td><td>Cursos con certificado.</td></tr>
+          <tr><td><a href="https://code.claude.com/docs/en/overview" target="_blank" rel="noopener">Claude Code: documentación</a></td><td>Base técnica de Perxia: memoria, skills, hooks y flujos de trabajo.</td></tr>
+          <tr><td><a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener">MCP</a></td><td>Estándar abierto para conectar sistemas externos.</td></tr>
+          <tr><td><a href="https://agents.md" target="_blank" rel="noopener">AGENTS.md</a></td><td>Formato de contexto persistente para agentes.</td></tr>
+          <tr><td><a href="https://mermaid.js.org/intro/" target="_blank" rel="noopener">Mermaid</a></td><td>Sintaxis para diagramas de proceso, secuencia y estados.</td></tr>
+          <tr><td><a href="https://github.com/anthropics/anthropic-sdk-typescript" target="_blank" rel="noopener">Anthropic TypeScript SDK</a></td><td>SDK para construir agentes en TypeScript (referencia del día 5).</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+  </div>
+
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   DATOS DEL PROGRAMA
+   Cada día (W[]):
+     n            — ID (D1–D5)
+     t            — título corto (barra lateral)
+     focus        — objetivo del día en una línea
+     learn[]      — qué vas a aprender
+     tablas[]     — { titulo, head[], rows[][] } de apoyo
+     essays[]     — prácticas evaluables { id, t, d, ent, tool }
+     quiz[]       — (opcional) validación { q, opts[], a (índice correcto), why }
+     profundizar[]— (opcional, no evaluado) [tipo, título, url, nota]
+   ══════════════════════════════════════════════════════════════════════════ */
+const W = [
+
+  {
+    n: 'D1',
+    t: 'Usar Perxia',
+    focus: 'Qué es Perxia, en qué se diferencia de un autocompletado y cómo pedir sin caer en los antipatrones más comunes.',
+    learn: [
+      'Perxia es un asistente de trabajo: entrega documentos y tareas completas, no solo líneas sueltas como un autocompletado',
+      'Pedir con contexto: rol, tarea, formato de salida y un ejemplo concreto',
+      'Revisar antes de aceptar: pedir un ajuste específico en lugar de empezar de cero',
+      'Documentos que otra persona puede seguir: resumen, tabla de pasos y diagrama del proceso'
+    ],
+    tablas: [
+      {
+        titulo: 'Antipatrones al pedir',
+        head: ['Antipatrón', 'Qué pasa', 'En cambio'],
+        rows: [
+          ['Prompt vago («ayúdame con el proceso»)', 'Respuesta genérica que hay que rehacer', 'Dar rol, contexto, tarea y formato'],
+          ['Pegar todo de golpe', 'Perxia se pierde en el ruido', 'Entregar lo necesario, por partes'],
+          ['Aceptar sin revisar', 'Errores que llegan al equipo', 'Verificar y pedir un ajuste concreto'],
+          ['Datos sensibles en el prompt', 'Información de clientes o del banco fuera de control', 'Usar solo datos inventados']
+        ]
+      }
+    ],
+    essays: [
+      {
+        id: 'E1',
+        t: 'Documenta un proceso real',
+        d: 'Elige un proceso de tu área (integración, aprobación o atención de incidentes) y pide a Perxia que lo documente. Pide al menos un ajuste concreto antes de entregar.',
+        ent: 'Documento con resumen de 1–2 frases, tabla de pasos o actores y diagrama del proceso. Entrega la versión ajustada, no la primera respuesta.',
+        tool: 'Perxia'
+      }
+    ],
+    quiz: [
+      {
+        q: '¿Qué es una Skill en Perxia?',
+        opts: ['Un servidor que conecta con bases de datos', 'Una receta reutilizable con propósito, pasos, ejemplo y límites', 'Un disparador que se activa a una hora fija'],
+        a: 1,
+        why: 'Una Skill describe cómo hacer una tarea de forma repetible.'
+      },
+      {
+        q: '¿Para qué sirve un MCP?',
+        opts: ['Conectar Perxia con sistemas externos con permisos acotados', 'Reemplazar la revisión humana de los resultados', 'Guardar el historial de las conversaciones'],
+        a: 0,
+        why: 'El MCP es el puente a sistemas externos, y sus permisos deben ser mínimos.'
+      },
+      {
+        q: '¿Qué diferencia una Skill de un MCP?',
+        opts: ['La Skill define qué hacer; el MCP da acceso a un sistema', 'Son lo mismo con distinto nombre', 'El MCP define los pasos; la Skill conecta los sistemas'],
+        a: 0,
+        why: 'La receta (Skill) describe el proceso; la conexión (MCP) da acceso a los datos.'
+      }
+    ],
+    profundizar: [
+      ['Curso', 'AI Fluency: Framework & Foundations', 'https://academy.claude.com/courses/ai-fluency-framework-foundations', 'Fundamentos de IA generativa aplicada.'],
+      ['Lectura', 'Prompt engineering overview', 'https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview', ''],
+      ['Referencia', 'Prompting best practices', 'https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices', 'La guía de técnicas de prompting.'],
+      ['Referencia', 'Sintaxis Mermaid', 'https://mermaid.js.org/intro/', 'Flowchart, secuencia y diagrama de estados.']
+    ]
+  },
+
+  {
+    n: 'D2',
+    t: 'Las cuatro piezas',
+    focus: 'Entender cómo se conectan Trigger, Agente, Skill y MCP, y revisar documentación con criterio para detectar antipatrones de integración.',
+    learn: [
+      'Skill: receta reutilizable con propósito, pasos, ejemplo y límites',
+      'Agente: especialista con rol definido que usa Skills y MCPs',
+      'MCP: conexión a sistemas externos con permisos acotados',
+      'Trigger: ejecución por tiempo o evento, con límites claros',
+      'Flujo de punta a punta: Trigger → Agente → Skill → MCP → resultado al usuario'
+    ],
+    tablas: [
+      {
+        titulo: 'Checklist de revisión de documentación',
+        head: ['Criterio', 'Pregunta que responde'],
+        rows: [
+          ['Propósito', '¿Se entiende para qué sirve y quién la usa?'],
+          ['Pasos', '¿Otra persona puede seguirlos sin preguntar?'],
+          ['Ejemplo', '¿Hay un caso real con entrada y salida?'],
+          ['Límites', '¿Dice qué no hace y cuándo debe detenerse?']
+        ]
+      },
+      {
+        titulo: 'Antipatrones de integración',
+        head: ['Antipatrón', 'Señal', 'Corrección'],
+        rows: [
+          ['Agente sin fronteras', 'Hace de todo y decide fuera de su rol', 'Acotar el rol y lo que no puede hacer'],
+          ['Permisos de más', 'Acceso total a un sistema', 'Permisos mínimos por tarea'],
+          ['Trigger sin límite', 'Se dispara sin tope de veces o de coste', 'Frecuencia máxima y condición de parada'],
+          ['Skill vaga', '«Ayuda con reportes»', 'Propósito, pasos y ejemplo concretos']
+        ]
+      }
+    ],
+    essays: [
+      {
+        id: 'E2a',
+        t: 'Revisión con checklist',
+        d: 'Toma una documentación de Skill, MCP, Agente o Trigger (puede ser una que generaste con Perxia) y revísala con el checklist. Pide a Perxia una versión corregida.',
+        ent: 'Tabla con hallazgos por criterio, la versión corregida y el antipatrón que detectaste.',
+        tool: 'Perxia'
+      },
+      {
+        id: 'E2b',
+        t: 'Ficha de integración',
+        d: 'Documenta con Perxia una integración que conozcas: resumen, camino feliz, camino de error, datos intercambiados y un aviso con la regla más crítica.',
+        ent: 'Diagrama de secuencia (feliz + error), tabla de datos, aviso y revisión final con las tres preguntas: ¿está correcto?, ¿se entiende?, ¿un compañero podría continuar sin ti?',
+        tool: 'Perxia'
+      }
+    ],
+    profundizar: [
+      ['Curso', 'Introduction to agent skills', 'https://academy.claude.com/courses/introduction-to-agent-skills', ''],
+      ['Curso', 'Introduction to subagents', 'https://academy.claude.com/courses/introduction-to-subagents', ''],
+      ['Curso', 'Introduction to Model Context Protocol', 'https://academy.claude.com/courses/introduction-to-model-context-protocol', ''],
+      ['Lectura', '¿Qué es MCP?', 'https://modelcontextprotocol.io/', 'El estándar abierto detrás de las conexiones de Perxia.'],
+      ['Docs', 'Hooks — cómo se disparan las automatizaciones', 'https://code.claude.com/docs/en/hooks', 'Lectura conceptual.']
+    ]
+  },
+
+  {
+    n: 'D3',
+    t: 'Manos a la obra',
+    focus: 'Elegir la pieza correcta para tu trabajo y crearla con Perxia: una Skill o un agente con fronteras, probado con un caso real y uno inesperado.',
+    learn: [
+      'Matriz de decisión: cuándo usar una Skill, un agente, un MCP o un Trigger',
+      'Pedir el andamiaje con la fórmula qué / para qué / reglas / prueba',
+      'Crear una Skill o un agente con fronteras claras para un proceso propio',
+      'Probar con un caso real y uno inesperado',
+      'Salir del doom loop: detenerse, reducir el problema y pedir de nuevo con el error exacto',
+      'Mostrar la pieza en una demo corta de 3 minutos'
+    ],
+    tablas: [
+      {
+        titulo: 'Matriz de decisión',
+        head: ['Si necesitas…', 'Usa', 'Ejemplo'],
+        rows: [
+          ['Repetir una tarea con los mismos pasos', 'Skill', 'Acta de reunión con el formato del equipo'],
+          ['Consultar un sistema externo con permisos acotados', 'MCP existente', 'Consultar un repositorio en modo solo lectura'],
+          ['Un especialista que decida entre varias opciones', 'Agente', 'Clasificar y responder reclamos dentro de límites'],
+          ['Que algo ocurra solo a una hora o ante un evento', 'Trigger existente', 'Recordatorio de vencimientos cada lunes']
+        ]
+      },
+      {
+        titulo: 'Fórmula para pedir el andamiaje',
+        head: ['Campo', 'Qué escribir'],
+        rows: [
+          ['Qué', 'La pieza y su tarea en una frase'],
+          ['Para qué', 'Quién la usa y qué dolor quita'],
+          ['Reglas', 'Qué puede y qué no puede hacer; qué datos se permiten'],
+          ['Prueba', 'Un caso real y uno inesperado, con resultado esperado']
+        ]
+      }
+    ],
+    essays: [
+      {
+        id: 'E3',
+        t: 'Tu primera pieza',
+        d: 'Crea una Skill o un agente con fronteras para un proceso de tu trabajo, con datos inventados. Pruébala con un caso real y uno inesperado y documéntala.',
+        ent: 'Archivo de la pieza + .md con propósito, pasos, ejemplo y límites + evidencia de los dos casos de prueba.',
+        tool: 'Perxia'
+      }
+    ],
+    profundizar: [
+      ['Curso', 'Claude Code 101', 'https://academy.claude.com/courses/claude-code-101', ''],
+      ['Curso', 'Claude Code in Action', 'https://academy.claude.com/courses/claude-code-in-action', ''],
+      ['Docs', 'Memoria: CLAUDE.md y AGENTS.md', 'https://code.claude.com/docs/en/memory', 'Contexto persistente para el agente.'],
+      ['Docs', 'Skills — referencia técnica', 'https://code.claude.com/docs/en/skills', '']
+    ]
+  },
+
+  {
+    n: 'D4',
+    t: 'Con propósito',
+    focus: 'Validar que tu pieza resuelve un dolor real, construirla en dos sprints y dejarla lista para usarse en el trabajo.',
+    learn: [
+      'Test de propósito antes de empezar: quién la usa, qué dolor quita y si podría usarse esta semana',
+      'Alcance de hoy en una frase, para evitar el scope creep',
+      'Sprint 1: versión base con el prompt de la pieza elegida',
+      'Sprint 2: caso real y caso inesperado, documentación y protocolo cuando algo falla',
+      'Estándar «listo para usar»: funciona sola, propósito obvio, probada y documentada'
+    ],
+    tablas: [
+      {
+        titulo: 'Test de propósito',
+        head: ['Pregunta', 'Respuesta mínima esperada'],
+        rows: [
+          ['¿Quién lo usa?', 'Una persona o un rol concreto'],
+          ['¿Qué dolor quita?', 'Una tarea repetida o un error frecuente que deja de existir'],
+          ['¿Podría usarse esta semana?', 'Sí, con datos inventados y sin depender de nadie más'],
+          ['¿Cuál es el alcance de hoy?', 'Una frase; lo demás queda fuera']
+        ]
+      }
+    ],
+    essays: [
+      {
+        id: 'E4',
+        t: 'Reto con propósito',
+        d: 'Aplica el test de propósito, define el alcance en una frase y construye en dos sprints, a partir de tu pieza del día 3 o de un caso nuevo.',
+        ent: 'Artefacto funcionando + .md + evidencia de prueba (caso real y caso inesperado) + nota con lo que no alcanzaste y por qué.',
+        tool: 'Perxia'
+      }
+    ],
+    profundizar: [
+      ['Docs', 'Claude Code: best practices', 'https://code.claude.com/docs/en/best-practices', ''],
+      ['Lectura', 'Construir un servidor MCP', 'https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server', ''],
+      ['Lectura', 'Buenas prácticas de seguridad MCP', 'https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices', '']
+    ]
+  },
+
+  {
+    n: 'D5',
+    t: 'Prueba Técnica',
+    focus: 'Prueba Técnica Perxia 2.0: diseñar e implementar un agente conversacional de automatización empresarial en TypeScript. Es una prueba independiente de los días 1 a 4.',
+    learn: [
+      'Arquitectura de un agente conversacional: estados, contexto e intents',
+      'Ciclo con herramientas: el modelo propone, la aplicación ejecuta y valida',
+      'Límites del agente: prepara y pide confirmación; no firma, no envía y no escribe en sistemas reales',
+      'Escalado humano cuando no hay confianza suficiente',
+      'Reglas: trabajo individual, fixtures de solo lectura y clave del modelo solo en variables de entorno'
+    ],
+    tablas: [
+      {
+        titulo: 'Procesos del reto (según el PRD asignado)',
+        head: ['PRD', 'Proceso', 'Lo que debe lograr el agente'],
+        rows: [
+          ['PRD-01', 'Registro de proveedor', 'Llenar el registro desde el maestro, listar faltantes y dejar el paquete listo para firma humana'],
+          ['PRD-02', 'Registro de contratos', 'Registrar contratos desde un buzón, evitar duplicados, pedir confirmación si la confianza es baja y alertar vencimientos'],
+          ['PRD-03', 'Órdenes de compra SAP', 'Validar contra maestros, bloquear lo que no cumple y pedir confirmación en los casos dudosos']
+        ]
+      }
+    ],
+    essays: [
+      {
+        id: 'PT',
+        t: 'Prueba Técnica Perxia 2.0',
+        d: 'Construye el agente del PRD asignado con chat, ciclo de herramientas y conexión a un modelo. Declara qué asistentes de IA usaste y asegúrate de poder explicar el código entregado.',
+        ent: 'Repositorio Git con la aplicación, enlace para probarla, demo.ts (ejecuta las herramientas sin modelo), SOLUCION.md y los fixtures oficiales sin modificar.',
+        tool: 'TypeScript · Claude API · Git'
+      }
+    ],
+    profundizar: [
+      ['Curso', 'Building with the Claude API', 'https://academy.claude.com/courses/building-with-the-claude-api', ''],
+      ['Docs', 'Tool use: overview', 'https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview', 'El patrón central de la prueba.'],
+      ['SDK', 'Anthropic TypeScript SDK', 'https://github.com/anthropics/anthropic-sdk-typescript', 'Lee el README y los ejemplos.'],
+      ['Docs', 'Streaming (SSE)', 'https://platform.claude.com/docs/en/api/streaming', ''],
+      ['Ejemplos', 'Claude Cookbook', 'https://platform.claude.com/cookbook', 'Patrones de tool use, agentes y multi-turno.']
+    ]
+  }
+
+]; // fin W[]
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Estado y persistencia
+   ══════════════════════════════════════════════════════════════════════════ */
+const KEY = 'perxia4dev-v2';
+let st = { done: {}, quiz: {}, day: 'D1' };
+try { const s = JSON.parse(localStorage.getItem(KEY)); if (s) st = { ...st, ...s }; } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Utilidades
+   ══════════════════════════════════════════════════════════════════════════ */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const keys = w => [...w.essays.map(e => w.n + '-' + e.id), ...(w.quiz ? [w.n + '-Q'] : [])];
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Renderizado
+   ══════════════════════════════════════════════════════════════════════════ */
+function progress() {
+  let tot = 0, d = 0;
+  W.forEach(w => keys(w).forEach(k => { tot++; if (st.done[k]) d++; }));
+  const p = tot ? Math.round(d * 100 / tot) : 0;
+  document.getElementById('pct').textContent = p + '%';
+  document.getElementById('cnt').textContent = d + ' de ' + tot + ' prácticas';
+  document.getElementById('ringArc').setAttribute('stroke-dasharray', p + ' 100');
+}
+
+function tabs() {
+  const el = document.getElementById('tabs');
+  el.innerHTML = W.map(w => {
+    const c = keys(w), d = c.filter(k => st.done[k]).length;
+    return `<button class="tab" role="tab" id="tab-${w.n}" aria-selected="${st.day === w.n}" data-w="${w.n}">
+      <span class="n">Día ${esc(w.n.slice(1))}</span>
+      <span class="t">${esc(w.t)}</span>
+      <span class="p ${c.length && d === c.length ? 'done' : ''}">${d}/${c.length}</span>
+    </button>`;
+  }).join('');
+  el.querySelectorAll('.tab').forEach(b => b.onclick = () => { st.day = b.dataset.w; save(); render(); });
+}
+
+function tablaHTML(t) {
+  return `<div class="sec"><h3>${esc(t.titulo)}</h3><div class="tw"><table>
+    <thead><tr>${t.head.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead>
+    <tbody>${t.rows.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody>
+  </table></div></div>`;
+}
+
+function quizHTML(w) {
+  const ans = st.quiz[w.n] || {};
+  const correctas = w.quiz.filter((qq, i) => ans[i] === qq.a).length;
+  return `<div class="quiz">
+    <p class="fb"><b>Validación de conceptos:</b> ${correctas} de ${w.quiz.length} correctas</p>
+    ${w.quiz.map((qq, qi) => {
+      const sel = ans[qi], has = sel !== undefined, ok = sel === qq.a;
+      return `<fieldset>
+        <legend>${qi + 1}. ${esc(qq.q)}</legend>
+        ${qq.opts.map((o, oi) => `<label class="opt">
+          <input type="radio" name="q-${w.n}-${qi}" data-day="${w.n}" data-q="${qi}" value="${oi}" ${sel === oi ? 'checked' : ''}>
+          <span>${esc(o)}</span></label>`).join('')}
+        ${has ? `<p class="fb ${ok ? 'ok' : 'no'}">${ok ? 'Correcto. ' : 'No del todo. '}${esc(qq.why)}</p>` : ''}
+      </fieldset>`;
+    }).join('')}
+  </div>`;
+}
+
+function panel() {
+  const w = W.find(x => x.n === st.day) || W[0];
+  const ks = keys(w), d = ks.filter(k => st.done[k]).length;
+  const isTest = w.n === 'D5';
+
+  const tablas = (w.tablas || []).map(tablaHTML).join('');
+  const es = w.essays.map(e => `
+    <div class="essay">
+      <h4>${esc(e.id)} · ${esc(e.t)}</h4>
+      <p>${esc(e.d)}</p>
+      <dl>
+        <dt>Entregable</dt><dd>${esc(e.ent)}</dd>
+        <dt>Herramienta</dt><dd>${esc(e.tool)}</dd>
+      </dl>
+      <label>
+        <input type="checkbox" id="${w.n}-${e.id}" ${st.done[w.n + '-' + e.id] ? 'checked' : ''}>
+        ${isTest ? 'Prueba entregada' : 'Práctica entregada'}
+      </label>
+    </div>`).join('');
+  const quiz = w.quiz ? quizHTML(w) : '';
+  const pf = (w.profundizar || []).length ? `
+    <div class="profundizar">
+      <h3>Para profundizar</h3>
+      <p class="pf-note">Opcional. No forma parte de la evaluación.</p>
+      <ul>${w.profundizar.map(([tipo, tit, url, nota]) => `
+        <li><a href="${url}" target="_blank" rel="noopener">${esc(tit)} ↗</a> <span class="kind">${esc(tipo)}</span>
+          ${nota ? `<span class="note">${esc(nota)}</span>` : ''}</li>`).join('')}
+      </ul>
+    </div>` : '';
+
+  document.getElementById('panel').setAttribute('aria-labelledby', 'tab-' + w.n);
+  document.getElementById('panel').innerHTML = `
+    <div class="eyebrow">Día ${esc(w.n.slice(1))} de 5</div>
+    <h2>${esc(w.t)}</h2>
+    <p class="focus">${esc(w.focus)}</p>
+    <div class="bar" aria-hidden="true"><i style="width:${ks.length ? d * 100 / ks.length : 0}%"></i></div>
+    <div class="sec">
+      <h3>Qué vas a aprender</h3>
+      <ul class="learn">${w.learn.map(l => `<li>${esc(l)}</li>`).join('')}</ul>
+    </div>
+    ${tablas}
+    <div class="sec">
+      <h3>${isTest ? 'La prueba' : 'Práctica evaluable'}</h3>
+      ${quiz}${es}
+    </div>
+    ${pf}`;
+
+  document.querySelectorAll('#panel input[type=checkbox]').forEach(cb => cb.onchange = () => {
+    if (cb.checked) st.done[cb.id] = 1; else delete st.done[cb.id];
+    save(); render();
+  });
+  document.querySelectorAll('#panel input[type=radio]').forEach(r => r.onchange = () => {
+    const w = W.find(x => x.n === r.dataset.day);
+    const ans = { ...(st.quiz[w.n] || {}), [r.dataset.q]: +r.value };
+    st.quiz[w.n] = ans;
+    if (w.quiz.every((qq, i) => ans[i] === qq.a)) st.done[w.n + '-Q'] = 1;
+    else delete st.done[w.n + '-Q'];
+    save(); render();
+  });
+}
+
+function render() { tabs(); panel(); progress(); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Controles
+   ══════════════════════════════════════════════════════════════════════════ */
+const cr = document.getElementById('confirmReset');
+document.getElementById('reset').onclick    = () => cr.hidden = false;
+document.getElementById('noReset').onclick  = () => cr.hidden = true;
+document.getElementById('yesReset').onclick = () => { st.done = {}; st.quiz = {}; save(); cr.hidden = true; render(); };
+
+render();
+</script>
+</body>
+</html>
