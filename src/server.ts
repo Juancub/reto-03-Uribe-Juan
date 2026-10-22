@@ -86,16 +86,16 @@ const toolDefinitions: ToolDefinition[] = [
   },
 ];
 
+import { EMBEDDED_SYSTEM_PROMPT, EMBEDDED_KNOWLEDGE } from "./fixtures/embedded.js";
+
 // Cargar System Prompt y Base de Conocimiento
 function loadSystemPrompt(): string {
   const promptPath = path.join(baseDir, "agent", "prompt.md");
   const knowledgePath = path.join(baseDir, "src", "knowledge", "ordenes-compra.md");
 
-  let prompt = fs.existsSync(promptPath) ? fs.readFileSync(promptPath, "utf-8") : "Eres un agente de compras SAP.";
-  if (fs.existsSync(knowledgePath)) {
-    const knowledge = fs.readFileSync(knowledgePath, "utf-8");
-    prompt += "\n\n# CONOCIMIENTO DE PROCESO DE NEGOCIO:\n" + knowledge;
-  }
+  let prompt = fs.existsSync(promptPath) ? fs.readFileSync(promptPath, "utf-8") : EMBEDDED_SYSTEM_PROMPT;
+  const knowledge = fs.existsSync(knowledgePath) ? fs.readFileSync(knowledgePath, "utf-8") : EMBEDDED_KNOWLEDGE;
+  prompt += "\n\n# CONOCIMIENTO DE PROCESO DE NEGOCIO:\n" + knowledge;
   return prompt;
 }
 

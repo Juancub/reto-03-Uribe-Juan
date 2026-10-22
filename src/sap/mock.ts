@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { SapAdapter, OrdenCompra } from "./adapter.js";
+import { getEmbeddedMaestro } from "../fixtures/embedded.js";
 
 export class MockSapAdapter implements SapAdapter {
   private baseDir: string;
@@ -31,26 +32,32 @@ export class MockSapAdapter implements SapAdapter {
   }
 
   async consultarProveedor(nit: string): Promise<{ codigo_sap: string; activo: boolean } | null> {
-    if (!fs.existsSync(this.proveedoresFile)) {
-      return null;
-    }
-    try {
-      const data = JSON.parse(fs.readFileSync(this.proveedoresFile, "utf-8"));
-      const cleanNit = nit.replace(/\D/g, "");
-      const prov = data.find((p: any) => {
-        const pNitClean = String(p.nit).replace(/\D/g, "");
-        return pNitClean === cleanNit;
-      });
-      if (prov) {
-        return {
-          codigo_sap: prov.codigo_sap,
-          activo: Boolean(prov.activo),
-        };
+    let data: any[] | null = null;
+    if (fs.existsSync(this.proveedoresFile)) {
+      try {
+        data = JSON.parse(fs.readFileSync(this.proveedoresFile, "utf-8"));
+      } catch {
+        data = null;
       }
-      return null;
-    } catch {
+    }
+    if (!data) {
+      data = getEmbeddedMaestro("proveedores");
+    }
+    if (!data) {
       return null;
     }
+    const cleanNit = nit.replace(/\D/g, "");
+    const prov = data.find((p: any) => {
+      const pNitClean = String(p.nit).replace(/\D/g, "");
+      return pNitClean === cleanNit;
+    });
+    if (prov) {
+      return {
+        codigo_sap: prov.codigo_sap,
+        activo: Boolean(prov.activo),
+      };
+    }
+    return null;
   }
 
   async buscarOrdenPorReferencia(solicitud_id: string): Promise<{ numero_oc: string } | null> {

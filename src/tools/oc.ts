@@ -5,6 +5,7 @@ import { z } from "zod";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { OrdenCompra, OrdenCompraSchema, SapAdapter } from "../sap/adapter.js";
 import { MockSapAdapter } from "../sap/mock.js";
+import { getEmbeddedFile, hasEmbeddedCaso, getEmbeddedMaestro } from "../fixtures/embedded.js";
 
 export interface ToolContext {
   directory?: string;
@@ -144,45 +145,49 @@ export const leer_paquete = {
       const baseDir = getBaseDir(ctx);
       const casoDir = path.join(baseDir, "fixtures", "reto-03", "solicitudes", args.caso);
 
-      if (!fs.existsSync(casoDir)) {
+      const existsOnDisk = fs.existsSync(casoDir);
+      const existsEmbedded = hasEmbeddedCaso(args.caso);
+
+      if (!existsOnDisk && !existsEmbedded) {
         return JSON.stringify({ ok: false, error: `El caso '${args.caso}' no existe en la ruta de fixtures.` });
       }
+
+      const getFile = (filename: string): any | null => {
+        const filePath = path.join(casoDir, filename);
+        if (fs.existsSync(filePath)) {
+          const raw = fs.readFileSync(filePath, "utf-8");
+          return filename.endsWith(".json") ? JSON.parse(raw) : raw;
+        }
+        return getEmbeddedFile(args.caso, filename);
+      };
 
       const adjuntos_faltantes: string[] = [];
 
       // Correo
-      const correoPath = path.join(casoDir, "correo.json");
-      let correo: any = null;
-      if (fs.existsSync(correoPath)) {
-        correo = JSON.parse(fs.readFileSync(correoPath, "utf-8"));
-      } else {
+      const correo = getFile("correo.json");
+      if (!correo) {
         adjuntos_faltantes.push("correo.json");
       }
 
       // Solicitud
-      const solPath = path.join(casoDir, "solicitud.json");
-      let solicitud: any = null;
-      if (fs.existsSync(solPath)) {
-        solicitud = JSON.parse(fs.readFileSync(solPath, "utf-8"));
-      } else {
+      const solicitud = getFile("solicitud.json");
+      if (!solicitud) {
         adjuntos_faltantes.push("solicitud.json");
       }
 
       // Cotización
-      const cotPath = path.join(casoDir, "cotizacion.txt");
+      const cotRaw = getFile("cotizacion.txt");
       let cotizacion: any = null;
-      if (fs.existsSync(cotPath)) {
-        const cotRaw = fs.readFileSync(cotPath, "utf-8");
-        cotizacion = parseCotizacion(cotRaw);
+      if (cotRaw) {
+        cotizacion = parseCotizacion(typeof cotRaw === "string" ? cotRaw : JSON.stringify(cotRaw));
       } else {
         adjuntos_faltantes.push("cotizacion.txt");
       }
 
       // Aprobación
-      const aprPath = path.join(casoDir, "aprobacion.json");
+      const aprData = getFile("aprobacion.json");
       let aprobacion: any = null;
-      if (fs.existsSync(aprPath)) {
-        const aprData = JSON.parse(fs.readFileSync(aprPath, "utf-8"));
+      if (aprData) {
         const cuerpo = aprData.cuerpo || "";
         const aprobado = /aprobado/i.test(cuerpo);
         aprobacion = {
@@ -198,11 +203,10 @@ export const leer_paquete = {
       }
 
       // Factura (opcional / caso retroactivo)
-      const facPath = path.join(casoDir, "factura.txt");
+      const facRaw = getFile("factura.txt");
       let factura: any = null;
-      if (fs.existsSync(facPath)) {
-        const facRaw = fs.readFileSync(facPath, "utf-8");
-        factura = parseFactura(facRaw);
+      if (facRaw) {
+        factura = parseFactura(typeof facRaw === "string" ? facRaw : JSON.stringify(facRaw));
       }
 
       if (!solicitud || !correo) {
@@ -254,10 +258,22 @@ export const validar = {
 
       // Cargar catálogos maestros
       const maestrosDir = path.join(baseDir, "fixtures", "reto-03", "maestros");
-      const proveedores = JSON.parse(fs.readFileSync(path.join(maestrosDir, "proveedores.json"), "utf-8"));
-      const centrosCosto = JSON.parse(fs.readFileSync(path.join(maestrosDir, "centros-costo.json"), "utf-8"));
-      const condicionesPago = JSON.parse(fs.readFileSync(path.join(maestrosDir, "condiciones-pago.json"), "utf-8"));
-      const indicadoresIva = JSON.parse(fs.readFileSync(path.join(maestrosDir, "indicadores-iva.json"), "utf-8"));
+      const loadMaestro = (name: string) => {
+        const p = path.join(maestrosDir, `${name}.json`);
+        if (fs.existsSync(p)) {
+          try {
+            return JSON.parse(fs.readFileSync(p, "utf-8"));
+          } catch {
+            return getEmbeddedMaestro(name);
+          }
+        }
+        return getEmbeddedMaestro(name);
+      };
+
+      const proveedores = loadMaestro("proveedores");
+      const centrosCosto = loadMaestro("centros-costo");
+      const condicionesPago = loadMaestro("condiciones-pago");
+      const indicadoresIva = loadMaestro("indicadores-iva");
 
       const bloqueos: string[] = [];
       const confirmaciones: string[] = [];
@@ -401,12 +417,22 @@ export const generar_evidencia = {
     try {
       const baseDir = getBaseDir(ctx);
       const aprPath = path.join(baseDir, "fixtures", "reto-03", "solicitudes", args.caso, "aprobacion.json");
+      let apr: any = null;
+      if (fs.existsSync(aprPath)) {
+        try {
+          apr = JSON.parse(fs.readFileSync(aprPath, "utf-8"));
+        } catch {
+          apr = null;
+        }
+      }
+      if (!apr) {
+        apr = getEmbeddedFile(args.caso, "aprobacion.json");
+      }
 
-      if (!fs.existsSync(aprPath)) {
+      if (!apr) {
         return JSON.stringify({ ok: false, error: `No se encontró aprobacion.json para el caso '${args.caso}'.` });
       }
 
-      const apr = JSON.parse(fs.readFileSync(aprPath, "utf-8"));
       const outCasoDir = path.join(getOutDir(baseDir), args.caso);
       if (!fs.existsSync(outCasoDir)) {
         fs.mkdirSync(outCasoDir, { recursive: true });
