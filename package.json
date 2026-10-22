@@ -11,6 +11,7 @@
     "demo": "tsx demo.ts",
     "build:client": "npm run --prefix web build",
     "build": "npm run build:client && tsc --noEmit",
+    "postinstall": "npm --prefix web install",
     "start": "tsx src/server.ts"
   },
   "keywords": [

@@ -116,7 +116,7 @@ const sessions = new Map<string, SessionData>();
 // Función de registro en out/log.jsonl (Regla CA4)
 function logToolCall(entry: any) {
   try {
-    const outDir = path.join(baseDir, "out");
+    const outDir = process.env.VERCEL ? path.join("/tmp", "out") : path.join(baseDir, "out");
     if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
     const logFile = path.join(outDir, "log.jsonl");
     fs.appendFileSync(logFile, JSON.stringify(entry) + "\n", "utf-8");
@@ -126,9 +126,9 @@ function logToolCall(entry: any) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Endpoint: POST /api/chat
+// Endpoint: POST /api/chat y /chat
 // ─────────────────────────────────────────────────────────────────────────────
-app.post("/api/chat", async (req: Request, res: Response) => {
+app.post(["/api/chat", "/chat"], async (req: Request, res: Response) => {
   try {
     const { sessionId = `session_${Date.now()}`, message } = req.body;
 
@@ -251,9 +251,9 @@ app.post("/api/chat", async (req: Request, res: Response) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Endpoint: GET /api/sessions/:id
+// Endpoint: GET /api/sessions/:id y /sessions/:id
 // ─────────────────────────────────────────────────────────────────────────────
-app.get("/api/sessions/:id", (req: Request, res: Response) => {
+app.get(["/api/sessions/:id", "/sessions/:id"], (req: Request, res: Response) => {
   const sessionId = req.params.id;
   const session = sessions.get(sessionId);
   if (!session) {
@@ -269,9 +269,9 @@ app.get("/api/sessions/:id", (req: Request, res: Response) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Endpoint: GET /api/health
+// Endpoint: GET /api/health, /health y /api
 // ─────────────────────────────────────────────────────────────────────────────
-app.get("/api/health", (_req: Request, res: Response) => {
+app.get(["/api", "/api/health", "/health"], (_req: Request, res: Response) => {
   const ultimaOrden = sapAdapter.obtenerUltimaOrden();
   return res.json({
     ok: true,
@@ -283,8 +283,8 @@ app.get("/api/health", (_req: Request, res: Response) => {
   });
 });
 
-// Levantar servidor
-if (process.env.NODE_ENV !== "test") {
+// Levantar servidor (solo en entorno local/standalone, no en Vercel Serverless)
+if (process.env.NODE_ENV !== "test" && !process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`\n🚀 Servidor Backend corriendo en: http://localhost:${PORT}`);
     console.log(`📡 API Chat lista en: POST http://localhost:${PORT}/api/chat`);

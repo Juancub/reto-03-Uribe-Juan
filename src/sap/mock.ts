@@ -11,21 +11,22 @@ export class MockSapAdapter implements SapAdapter {
 
   constructor(baseDir: string = process.cwd()) {
     this.baseDir = baseDir;
-    this.sapDir = path.join(this.baseDir, "out", "sap");
+    const outBase = process.env.VERCEL ? path.join("/tmp", "out") : path.join(this.baseDir, "out");
+    this.sapDir = path.join(outBase, "sap");
     this.ordenesFile = path.join(this.sapDir, "ordenes.jsonl");
-    this.controlFile = path.join(this.baseDir, "out", "control.csv");
+    this.controlFile = path.join(outBase, "control.csv");
     this.proveedoresFile = path.join(this.baseDir, "fixtures", "reto-03", "maestros", "proveedores.json");
 
     this.ensureDirs();
   }
 
   private ensureDirs(): void {
+    const outBase = process.env.VERCEL ? path.join("/tmp", "out") : path.join(this.baseDir, "out");
+    if (!fs.existsSync(outBase)) {
+      fs.mkdirSync(outBase, { recursive: true });
+    }
     if (!fs.existsSync(this.sapDir)) {
       fs.mkdirSync(this.sapDir, { recursive: true });
-    }
-    const outDir = path.join(this.baseDir, "out");
-    if (!fs.existsSync(outDir)) {
-      fs.mkdirSync(outDir, { recursive: true });
     }
   }
 

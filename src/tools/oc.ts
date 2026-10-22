@@ -60,6 +60,10 @@ function getBaseDir(ctx?: ToolContext): string {
   return ctx?.directory || process.cwd();
 }
 
+export function getOutDir(baseDir: string): string {
+  return process.env.VERCEL ? path.join("/tmp", "out") : path.join(baseDir, "out");
+}
+
 function parseMonto(str: string): number {
   const clean = str.replace(/COP|\$|\s/gi, "").replace(/\./g, "").replace(/,/g, ".");
   const num = parseFloat(clean);
@@ -403,7 +407,7 @@ export const generar_evidencia = {
       }
 
       const apr = JSON.parse(fs.readFileSync(aprPath, "utf-8"));
-      const outCasoDir = path.join(baseDir, "out", args.caso);
+      const outCasoDir = path.join(getOutDir(baseDir), args.caso);
       if (!fs.existsSync(outCasoDir)) {
         fs.mkdirSync(outCasoDir, { recursive: true });
       }
@@ -592,7 +596,7 @@ export const construir_payload = {
         payload_orden: validado.data,
       };
 
-      const outCasoDir = path.join(baseDir, "out", args.caso);
+      const outCasoDir = path.join(getOutDir(baseDir), args.caso);
       if (!fs.existsSync(outCasoDir)) fs.mkdirSync(outCasoDir, { recursive: true });
 
       const tracePath = path.join(outCasoDir, "trazabilidad.json");

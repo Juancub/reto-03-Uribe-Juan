@@ -65,6 +65,25 @@ npm run demo
 
 ---
 
+## 🌐 Despliegue en la Nube (Vercel)
+
+El proyecto cuenta con configuración nativa (`vercel.json` y `api/index.ts`) para ejecutarse en **Vercel**, sirviendo la interfaz React compilada en el CDN y el backend Express en funciones serverless:
+
+### Pasos para Desplegar:
+1. Ve a [vercel.com/new](https://vercel.com/new) e inicia sesión con tu cuenta de GitHub.
+2. Importa el repositorio: **`Juancub/reto-03-Uribe-Juan`**.
+3. Vercel leerá la configuración de [vercel.json](vercel.json):
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `web/dist`
+4. En la sección **Environment Variables**, añade (opcional si usas modo emulado):
+   - `GEMINI_API_KEY`: *Tu clave de Google Gemini*
+   - `LLM_PROVIDER`: `gemini`
+   - `LLM_MODEL`: `gemini-1.5-flash`
+5. Pulsa **Deploy**.
+6. En segundos obtendrás tu URL pública de producción (ej. `https://reto-03-uribe-juan.vercel.app`) totalmente funcional.
+
+---
+
 ## 🏛️ Estructura del Repositorio
 
 ```
