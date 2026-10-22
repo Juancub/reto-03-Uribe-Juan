@@ -70,6 +70,27 @@ export class MockSapAdapter implements SapAdapter {
     return null;
   }
 
+  obtenerUltimaOrden(): { numero_oc: string; fecha: string; solicitud_id: string; totalOrdenes: number } | null {
+    if (!fs.existsSync(this.ordenesFile)) {
+      return null;
+    }
+    const lines = fs.readFileSync(this.ordenesFile, "utf-8").split("\n").filter((l) => l.trim().length > 0);
+    if (lines.length === 0) {
+      return null;
+    }
+    try {
+      const lastEntry = JSON.parse(lines[lines.length - 1]);
+      return {
+        numero_oc: lastEntry.numero_oc,
+        fecha: lastEntry.fecha,
+        solicitud_id: lastEntry.solicitud_id || lastEntry.orden?.referencia?.solicitud_id || "N/A",
+        totalOrdenes: lines.length,
+      };
+    } catch {
+      return null;
+    }
+  }
+
   async crearOrden(orden: OrdenCompra): Promise<{ numero_oc: string; fecha: string; idempotente: boolean }> {
     this.ensureDirs();
     const solicitud_id = orden.referencia.solicitud_id;

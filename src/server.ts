@@ -272,12 +272,14 @@ app.get("/api/sessions/:id", (req: Request, res: Response) => {
 // Endpoint: GET /api/health
 // ─────────────────────────────────────────────────────────────────────────────
 app.get("/api/health", (_req: Request, res: Response) => {
+  const ultimaOrden = sapAdapter.obtenerUltimaOrden();
   return res.json({
     ok: true,
     provider: process.env.LLM_PROVIDER || "gemini",
     model: process.env.LLM_MODEL || "gemini-1.5-flash",
     node_version: process.version,
     status: "online",
+    ultimaOrden,
   });
 });
 

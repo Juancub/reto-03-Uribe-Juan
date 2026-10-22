@@ -55,6 +55,7 @@ export default function App() {
     ok: true,
   });
   const [lastOcCreated, setLastOcCreated] = useState<string | null>(null);
+  const [lastOcDetails, setLastOcDetails] = useState<{ fecha?: string; solicitud_id?: string; totalOrdenes?: number } | null>(null);
   const [openTools, setOpenTools] = useState<Record<string, boolean>>({});
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -63,16 +64,27 @@ export default function App() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
 
-  useEffect(() => {
-    // Health check
+  const loadStatusAndOrders = () => {
     fetch("/api/health")
       .then((res) => res.json())
       .then((data) => {
         if (data.ok) {
           setServerStatus({ provider: data.provider, model: data.model, ok: true });
+          if (data.ultimaOrden) {
+            setLastOcCreated(data.ultimaOrden.numero_oc);
+            setLastOcDetails({
+              fecha: data.ultimaOrden.fecha,
+              solicitud_id: data.ultimaOrden.solicitud_id,
+              totalOrdenes: data.ultimaOrden.totalOrdenes,
+            });
+          }
         }
       })
       .catch(() => setServerStatus({ provider: "Local", model: "Emulado", ok: true }));
+  };
+
+  useEffect(() => {
+    loadStatusAndOrders();
   }, []);
 
   const toggleToolOpen = (toolId: string) => {
@@ -105,6 +117,7 @@ export default function App() {
       if (data.ok) {
         if (data.numero_oc) {
           setLastOcCreated(data.numero_oc);
+          loadStatusAndOrders();
         }
 
         const agentMsg: Message = {
@@ -147,7 +160,7 @@ export default function App() {
 
   const resetSession = () => {
     setSessionId(`ses_${Date.now()}`);
-    setLastOcCreated(null);
+    loadStatusAndOrders();
     setMessages([
       {
         id: "welcome_new",
@@ -652,7 +665,7 @@ export default function App() {
           >
             <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--title)", marginBottom: "8px" }}>
               <CheckCircle2 size={18} />
-              <h3 style={{ fontSize: "0.95rem" }}>Última OC Creada</h3>
+              <h3 style={{ fontSize: "0.95rem" }}>Última OC en SAP</h3>
             </div>
             {lastOcCreated ? (
               <div>
@@ -660,12 +673,24 @@ export default function App() {
                   #{lastOcCreated}
                 </div>
                 <div style={{ fontSize: "0.78rem", color: "var(--ink-secondary)" }}>
-                  Registrada exitosamente en <code>out/sap/ordenes.jsonl</code> y asentada en el log de control.
+                  {lastOcDetails?.solicitud_id && (
+                    <div style={{ marginBottom: "2px" }}>
+                      Solicitud: <span style={{ color: "var(--accent)", fontWeight: 600 }}>{lastOcDetails.solicitud_id}</span>
+                    </div>
+                  )}
+                  {lastOcDetails?.totalOrdenes !== undefined && (
+                    <div style={{ color: "var(--muted)", marginBottom: "4px" }}>
+                      Total en base SAP: <b>{lastOcDetails.totalOrdenes} órdenes</b>
+                    </div>
+                  )}
+                  <div>
+                    Almacenada en <code>out/sap/ordenes.jsonl</code>
+                  </div>
                 </div>
               </div>
             ) : (
               <p style={{ fontSize: "0.82rem", color: "var(--muted)" }}>
-                Aún no se ha creado ninguna orden en esta sesión.
+                Aún no hay órdenes registradas en el almacenamiento persistente de SAP (`out/sap/`).
               </p>
             )}
           </div>
