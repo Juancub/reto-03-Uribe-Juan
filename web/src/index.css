@@ -1,30 +1,35 @@
 :root {
-  --bg: #042423;
-  --bg-gradient: radial-gradient(circle at 80% 20%, rgba(109, 253, 140, 0.12) 0%, rgba(4, 36, 35, 1) 70%);
-  --surface: rgba(6, 54, 53, 0.85);
-  --surface-card: rgba(10, 68, 67, 0.65);
-  --surface-hover: rgba(15, 88, 86, 0.8);
-  --line: rgba(109, 253, 140, 0.22);
-  --line-strong: rgba(109, 253, 140, 0.45);
-  --ink: #FFFFFF;
-  --ink-secondary: #D4F4DC;
-  --muted: rgba(255, 255, 255, 0.65);
-  --accent: #6DFD8C;
-  --accent-glow: rgba(109, 253, 140, 0.35);
-  --title: #6DFD8C;
-  --soft: rgba(204, 255, 214, 0.15);
-  --warning-bg: rgba(255, 184, 0, 0.12);
-  --warning-border: rgba(255, 184, 0, 0.45);
-  --warning-text: #FFD269;
-  --danger-bg: rgba(255, 77, 77, 0.15);
-  --danger-border: rgba(255, 77, 77, 0.45);
-  --danger-text: #FF7B7B;
+  --bg: #F8FAFC;
+  --surface: #FFFFFF;
+  --surface-card: #FFFFFF;
+  --surface-subtle: #F1F5F9;
+  --surface-hover: #F8FAFC;
+  --line: #E2E8F0;
+  --line-strong: #CBD5E1;
+  --ink: #0F172A;
+  --ink-secondary: #334155;
+  --muted: #64748B;
+  --primary: #15601D;
+  --primary-hover: #0E4414;
+  --primary-soft: #ECFDF5;
+  --accent: #15601D;
+  --accent-light: #E8F5E9;
+  --accent-badge: #047857;
+  --title: #15601D;
+  --warning-bg: #FFFBEB;
+  --warning-border: #FCD34D;
+  --warning-text: #92400E;
+  --danger-bg: #FEF2F2;
+  --danger-border: #FCA5A5;
+  --danger-text: #B91C1C;
   --font-h: 'Outfit', sans-serif;
   --font-b: 'Montserrat', sans-serif;
   --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.35);
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
 * {
@@ -35,8 +40,6 @@
 
 body {
   background-color: var(--bg);
-  background-image: var(--bg-gradient);
-  background-attachment: fixed;
   color: var(--ink);
   font-family: var(--font-b);
   line-height: 1.6;
@@ -52,44 +55,54 @@ h1, h2, h3, h4, .brand-title {
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.15);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--line);
+  background: #CBD5E1;
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent);
+  background: #94A3B8;
 }
 
 /* Markdown styling inside chat messages */
 .markdown-body table {
   width: 100%;
   border-collapse: collapse;
-  margin: 12px 0;
+  margin: 14px 0;
   font-size: 13.5px;
-  background: rgba(0, 0, 0, 0.2);
+  background: #FFFFFF;
+  border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .markdown-body th {
-  background: rgba(109, 253, 140, 0.15);
-  color: var(--accent);
+  background: #F8FAFC;
+  color: #1E293B;
   text-align: left;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--line);
+  padding: 10px 14px;
+  border-bottom: 2px solid var(--line);
   font-weight: 600;
 }
 
 .markdown-body td {
-  padding: 8px 12px;
-  border-bottom: 1px solid rgba(109, 253, 140, 0.1);
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--line);
   color: var(--ink-secondary);
+}
+
+.markdown-body tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.markdown-body tbody tr:hover {
+  background: #F8FAFC;
 }
 
 .markdown-body ul, .markdown-body ol {
@@ -99,31 +112,36 @@ h1, h2, h3, h4, .brand-title {
 
 .markdown-body li {
   margin-bottom: 4px;
+  color: var(--ink-secondary);
 }
 
 .markdown-body code {
-  background: rgba(109, 253, 140, 0.12);
-  color: var(--accent);
+  background: #F1F5F9;
+  color: var(--primary);
   padding: 2px 6px;
   border-radius: 4px;
   font-family: monospace;
-  font-size: 0.9em;
+  font-size: 0.88em;
+  font-weight: 600;
+  border: 1px solid #E2E8F0;
 }
 
 .markdown-body pre code {
   display: block;
-  padding: 10px;
+  padding: 12px;
   overflow-x: auto;
+  background: #F8FAFC;
 }
 
 .markdown-body strong {
-  color: var(--accent);
+  color: #0F172A;
+  font-weight: 600;
 }
 
 .markdown-body h3 {
-  color: var(--accent);
-  margin-bottom: 6px;
-  font-size: 1.15rem;
+  color: var(--primary);
+  margin-bottom: 8px;
+  font-size: 1.12rem;
 }
 
 /* Pulse animation for thinking */
@@ -133,9 +151,9 @@ h1, h2, h3, h4, .brand-title {
 }
 
 .pulse-dot {
-  width: 8px;
-  height: 8px;
-  background-color: var(--accent);
+  width: 7px;
+  height: 7px;
+  background-color: var(--primary);
   border-radius: 50%;
   display: inline-block;
   animation: pulseDot 1.4s infinite ease-in-out both;
@@ -143,3 +161,10 @@ h1, h2, h3, h4, .brand-title {
 
 .pulse-dot:nth-child(1) { animation-delay: -0.32s; }
 .pulse-dot:nth-child(2) { animation-delay: -0.16s; }
+
+/* Responsive utility */
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+}
