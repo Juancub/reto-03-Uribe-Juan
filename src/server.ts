@@ -201,7 +201,7 @@ app.post("/api/chat", async (req: Request, res: Response) => {
             turnToolCalls.push({ name: tc.name, args: tc.args, result: parsedResult });
 
             // Detectar estado de confirmación
-            if (parsedResult.needsConfirmation) {
+            if (parsedResult.needsConfirmation || (parsedResult.data?.confirmaciones && parsedResult.data.confirmaciones.length > 0)) {
               needsConfirmation = true;
             }
             if (parsedResult.data?.numero_oc) {
