@@ -113,13 +113,24 @@ export class GeminiAdapter implements LlmAdapter {
   private ejecutarModoEmulado(mensajes: ChatMessage[], herramientas: ToolDefinition[]): LlmResponse {
     const lastMsg = mensajes[mensajes.length - 1];
 
+    // Determinar el caso actual buscando en el historial de mensajes
+    let caso = "";
+    for (let i = mensajes.length - 1; i >= 0; i--) {
+      const msg = mensajes[i];
+      const txt = (msg.content || "") + " " + JSON.stringify(msg.toolCalls || {});
+      const m = txt.match(/sol-00[1-6]/i);
+      if (m) {
+        caso = m[0].toLowerCase();
+        break;
+      }
+    }
+    if (!caso) caso = "sol-001";
+
     if (lastMsg.role === "user") {
       const text = (lastMsg.content || "").toLowerCase();
-      // Detectar caso en el texto del usuario
-      const matchCaso = text.match(/sol-00[1-6]/i);
-      const caso = matchCaso ? matchCaso[0].toLowerCase() : "sol-001";
-
-      const esConfirmacion = /confirmo|confirmar|sí|si|proceder|crear/i.test(text) && !matchCaso;
+      const matchCasoDirecto = text.match(/sol-00[1-6]/i);
+      const casoActual = matchCasoDirecto ? matchCasoDirecto[0].toLowerCase() : caso;
+      const esConfirmacion = /confirmo|confirmar|sí|si|proceder|crear/i.test(text) && !matchCasoDirecto;
 
       if (esConfirmacion) {
         return {
@@ -127,7 +138,7 @@ export class GeminiAdapter implements LlmAdapter {
             {
               id: `call_confirm_${Date.now()}`,
               name: "oc_crear",
-              args: { caso, confirmado: true, confirmado_por: "analista_chat" },
+              args: { caso: casoActual, confirmado: true, confirmado_por: "analista_chat" },
             },
           ],
         };
@@ -139,7 +150,7 @@ export class GeminiAdapter implements LlmAdapter {
           {
             id: `call_read_${Date.now()}`,
             name: "oc_leer_paquete",
-            args: { caso },
+            args: { caso: casoActual },
           },
         ],
       };
@@ -155,7 +166,6 @@ export class GeminiAdapter implements LlmAdapter {
       }
 
       if (lastMsg.name === "oc_leer_paquete") {
-        const caso = data.solicitud?.solicitud_id ? data.solicitud.solicitud_id.replace("SOL-2026-", "sol-").toLowerCase() : "sol-001";
         return {
           toolCalls: [
             {
@@ -185,7 +195,6 @@ export class GeminiAdapter implements LlmAdapter {
         }
 
         // Si es apta sin confirmaciones
-        const caso = "sol-001";
         return {
           toolCalls: [
             {
@@ -200,7 +209,7 @@ export class GeminiAdapter implements LlmAdapter {
       if (lastMsg.name === "oc_crear") {
         if (data.numero_oc) {
           return {
-            text: `### 🎉 Orden de Compra Creada Exitosamente en SAP\n\n- **Número de OC:** \`${data.numero_oc}\`\n- **Fecha de registro:** ${data.fecha}\n- **Referencia Solicitud:** ${data.solicitud_id || "SOL-2026-001"}\n- **Estado Idempotencia:** ${data.idempotente ? "Recuperada orden existente" : "Nueva orden emitida"}\n\nEl registro de control ha sido actualizado satisfactoriamente en \`out/control.csv\`.`,
+            text: `### 🎉 Orden de Compra Creada Exitosamente en SAP\n\n- **Número de OC:** \`${data.numero_oc}\`\n- **Fecha de registro:** ${data.fecha}\n- **Referencia Solicitud:** ${data.solicitud_id || caso.toUpperCase()}\n- **Estado Idempotencia:** ${data.idempotente ? "Recuperada orden existente" : "Nueva orden emitida"}\n\nEl registro de control ha sido actualizado satisfactoriamente en \`out/control.csv\`.`,
             toolCalls: [],
           };
         }
